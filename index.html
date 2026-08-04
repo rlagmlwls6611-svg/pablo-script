@@ -80,17 +80,18 @@
   .app-layout {
     display: flex;
     gap: 16px;
-    max-width: 1280px;
+    max-width: 1350px;
     margin: 0 auto;
   }
   .left-pane { flex: 1; min-width: 0; }
   .right-pane {
-    width: 320px;
+    width: 340px;
     position: sticky;
     top: 16px;
     height: calc(100vh - 32px);
     display: flex;
     flex-direction: column;
+    gap: 12px;
   }
 
   .header {
@@ -112,26 +113,6 @@
     border-radius: 10px;
     outline: none;
     background: #fff;
-  }
-
-  .ai-btn-card {
-    background: #EFF6FF;
-    border: 1.5px solid #3B82F6;
-    border-radius: 10px;
-    padding: 12px;
-    margin-bottom: 12px;
-    text-align: center;
-  }
-  .ai-btn {
-    display: inline-block;
-    width: 100%;
-    padding: 10px;
-    background: #2563EB;
-    color: #fff;
-    text-decoration: none;
-    font-weight: 700;
-    font-size: 13.5px;
-    border-radius: 8px;
   }
 
   .tab-nav {
@@ -170,17 +151,18 @@
     padding: 14px;
     margin-bottom: 12px;
   }
-  .card-title { font-size: 15px; font-weight: 800; color: var(--navy-main); margin-bottom: 6px; }
-  .card-sub { font-size: 12px; color: var(--sub-text); margin-bottom: 10px; }
+  .card-title { font-size: 16px; font-weight: 800; color: var(--navy-main); margin-bottom: 6px; }
+  .card-sub { font-size: 12.5px; color: var(--sub-text); margin-bottom: 10px; }
 
+  /* 표 스타일 */
   .data-table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 12px;
+    font-size: 12.5px;
     margin-bottom: 8px;
   }
   .data-table th, .data-table td {
-    padding: 8px 10px;
+    padding: 9px 10px;
     text-align: left;
     border-bottom: 1px solid #EAE8E1;
   }
@@ -191,69 +173,178 @@
     font-weight: 800;
   }
   .bold { font-weight: 800; }
+  .txt-accent { color: var(--accent); font-weight: 800; }
 
-  .script-box {
-    background: #F8FAFC;
-    border-left: 3px solid var(--highlight-blue);
-    padding: 8px 10px;
+  /* 대화형 멘트 블록 (클릭 가능하도록 커서 추가) */
+  .script-step-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .step-label {
+    display: inline-block;
+    background: #2D3748;
+    color: #fff;
     font-size: 12px;
-    color: #1E293B;
-    border-radius: 0 6px 6px 0;
-    line-height: 1.4;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 4px;
+    margin-bottom: 6px;
   }
-
-  .accordion-item {
-    background: #fff;
-    border: 1px solid var(--border-line);
+  .chat-bubble {
+    background: #FFFDF9;
+    border: 1px solid #E2D9C8;
+    border-left: 4px solid var(--accent);
     border-radius: 8px;
-    margin-bottom: 8px;
-    overflow: hidden;
-  }
-  .accordion-header {
     padding: 12px 14px;
     font-size: 13.5px;
+    line-height: 1.6;
+    color: #2D3748;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    position: relative;
+  }
+  .chat-bubble:hover {
+    background: #FFF3ED;
+    border-color: var(--accent);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(224,99,42,0.1);
+  }
+  .chat-bubble::after {
+    content: '🔍 클릭해서 크게 보기';
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    font-size: 10px;
+    color: #9CA3AF;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .chat-bubble:hover::after {
+    opacity: 1;
+  }
+  .chat-bubble b {
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  /* 멘트 확대 팝업 모달 스타일 */
+  #scriptModal {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 10000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .modal-content {
+    background: #fff;
+    width: 100%;
+    max-width: 550px;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+    position: relative;
+    animation: modalScaleUp 0.2s ease-out;
+  }
+  @keyframes modalScaleUp {
+    from { transform: scale(0.95); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+  .modal-badge {
+    display: inline-block;
+    background: var(--navy-main);
+    color: #fff;
+    font-size: 11.5px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 6px;
+    margin-bottom: 12px;
+  }
+  .modal-text {
+    font-size: 18px;
+    line-height: 1.7;
+    color: #1F2937;
+    margin-bottom: 24px;
+    background: #F8FAFC;
+    padding: 18px;
+    border-radius: 10px;
+    border-left: 5px solid var(--accent);
+  }
+  .modal-text b { color: var(--accent); }
+  .modal-close-btn {
+    width: 100%;
+    padding: 12px;
+    background: var(--navy-main);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
     font-weight: 700;
     cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: #fff;
   }
-  .accordion-header:hover { background: #F9FAFB; }
-  .accordion-body {
-    display: none;
-    padding: 12px 14px;
-    background: #F8F9FA;
-    border-top: 1px solid var(--border-line);
-    font-size: 13px;
-    line-height: 1.6;
-  }
-  .accordion-item.open .accordion-body { display: block; }
-  .accordion-item.open .arrow { transform: rotate(180deg); }
-  .arrow { transition: transform 0.2s; font-size: 10px; }
+  .modal-close-btn:hover { background: #2C3E6B; }
 
-  .memo-panel {
+  /* 우측 패널 (계산기 & 메모장) */
+  .side-card {
     background: #fff;
     border: 1px solid var(--border-line);
     border-radius: 12px;
     padding: 14px;
-    height: 100%;
+  }
+  .side-card h3 { margin: 0 0 8px 0; font-size: 14px; font-weight: 800; color: var(--navy-main); }
+  
+  .calc-group { margin-bottom: 8px; }
+  .calc-group label { display: block; font-size: 11.5px; font-weight: 700; color: var(--sub-text); margin-bottom: 3px; }
+  .calc-group select, .calc-group input {
+    width: 100%;
+    padding: 8px;
+    font-size: 12.5px;
+    border: 1px solid var(--border-line);
+    border-radius: 6px;
+    outline: none;
+  }
+  .calc-result {
+    background: #F8FAFC;
+    border: 1px solid #CBD5E1;
+    border-radius: 8px;
+    padding: 10px;
+    margin-top: 10px;
+  }
+  .calc-result-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    margin-bottom: 4px;
+  }
+  .calc-result-row.total {
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--accent);
+    border-top: 1px dashed #CBD5E1;
+    padding-top: 6px;
+    margin-top: 6px;
+  }
+
+  .memo-panel {
+    flex: 1;
     display: flex;
     flex-direction: column;
   }
-  .memo-panel h3 { margin: 0 0 6px 0; font-size: 14px; font-weight: 800; color: var(--navy-main); }
-  .memo-panel p { margin: 0 0 10px 0; font-size: 11px; color: var(--sub-text); }
   .memo-area {
     flex: 1;
     width: 100%;
     padding: 10px;
     border: 1px solid var(--border-line);
     border-radius: 8px;
-    font-size: 12.5px;
+    font-size: 12px;
     resize: none;
     outline: none;
     font-family: inherit;
-    line-height: 1.5;
+    line-height: 1.4;
   }
 
   .badge {
@@ -269,7 +360,7 @@
 
   @media (max-width: 768px) {
     .app-layout { flex-direction: column; }
-    .right-pane { width: 100%; position: static; height: 250px; }
+    .right-pane { width: 100%; position: static; height: auto; }
   }
 </style>
 </head>
@@ -286,6 +377,15 @@
   </div>
 </div>
 
+<!-- 멘트 확대 보기 모달 팝업 -->
+<div id="scriptModal" onclick="closeModal(event)">
+  <div class="modal-content" onclick="event.stopPropagation()">
+    <div id="modalCategory" class="modal-badge">단계명</div>
+    <div id="modalTextContent" class="modal-text">확대된 멘트 내용이 여기에 표시됩니다.</div>
+    <button class="modal-close-btn" onclick="closeModal()">확인 (닫기)</button>
+  </div>
+</div>
+
 <!-- 메인 앱 컨텐츠 -->
 <div id="mainContent" class="main-content">
   <div class="app-layout">
@@ -298,23 +398,23 @@
 
       <!-- 검색창 -->
       <div class="search-box">
-        <input type="text" id="searchInput" onkeyup="filterItems()" placeholder="🔍 검색어 입력 (예: 맛집, 강남, 미용실, 바빠요...)">
+        <input type="text" id="searchInput" onkeyup="filterItems()" placeholder="🔍 검색어 입력 (예: 맛집, 프리미엄, 메뉴판, 거절대응...)">
       </div>
 
       <!-- 탭 메뉴 -->
       <div class="tab-nav">
         <div class="tab-btn active" onclick="switchTab('tab-quote', event)">견적서</div>
-        <div class="tab-btn" onclick="switchTab('tab-package', event)">패키지</div>
-        <div class="tab-btn" onclick="switchTab('tab-script', event)">영업멘트</div>
-        <div class="tab-btn" onclick="switchTab('tab-industry', event)">업체별</div>
-        <div class="tab-btn" onclick="switchTab('tab-objection', event)">대응상황</div>
+        <div class="tab-btn" onclick="switchTab('tab-package', event)">패키지 상세</div>
+        <div class="tab-btn" onclick="switchTab('tab-script', event)">기본 대화 흐름</div>
+        <div class="tab-btn" onclick="switchTab('tab-industry', event)">업체별 팁</div>
+        <div class="tab-btn" onclick="switchTab('tab-objection', event)">대응 상황</div>
         <div class="tab-btn" onclick="switchTab('tab-sheet', event)">구글시트(실시간)</div>
       </div>
 
       <!-- 1. 견적서 -->
       <div id="tab-quote" class="tab-content active">
         <div class="card">
-          <span class="badge">광고주 82.7% 계약</span>
+          <span class="badge">광고주 82.7% 선택</span>
           <div class="card-title">방문형 체험단 (A1)</div>
           <table class="data-table" style="text-align:right;">
             <tr><th style="text-align:left;">인원</th><th>원가</th><th>할인율</th><th>할인가</th><th>인당</th></tr>
@@ -326,8 +426,8 @@
         </div>
 
         <div class="card">
-          <span class="badge">광고주 92.3% 계약</span>
-          <div class="card-title">블로그 기자단 (1천 이상)</div>
+          <span class="badge">광고주 92.3% 선택</span>
+          <div class="card-title">블로그 기자단 (일 방문자 1천 이상)</div>
           <table class="data-table" style="text-align:right;">
             <tr><th style="text-align:left;">건수</th><th>원가</th><th>할인율</th><th>할인가</th><th>건당</th></tr>
             <tr><td style="text-align:left;">50건</td><td>2,500,000원</td><td>35%</td><td>1,625,000원</td><td>32,500원</td></tr>
@@ -337,89 +437,127 @@
         </div>
       </div>
 
-      <!-- 2. 패키지 -->
+      <!-- 2. 패키지 상세 -->
       <div id="tab-package" class="tab-content">
         <div class="card">
-          <div class="card-title">👑 A 프리미엄 패키지 (24개월)</div>
-          <div class="card-sub">총 1,530,000원 (월 63,750원)</div>
-          <div style="font-size:12.5px; color:var(--text-color);">
-            • 방문형 체험단 120명 + 기자단 30건<br>
-            • [무료 특전] 방문자 리뷰, 플레이스 저장, 숏폼 3건, 빅데이터 보고서 전체 무료 제공
+          <span class="badge">👑 가장 많이 선택하는 구성</span>
+          <div class="card-title" style="font-size:18px;">👑 A 프리미엄 패키지 (24개월)</div>
+          <div class="card-sub" style="font-size:14px; color:var(--accent); font-weight:800;">
+            총 <span style="font-size:17px; text-decoration: underline;">1,530,000원</span> (카드 24개월 할부 시 <span style="font-size:17px; background:#FFEAD2; padding:0 4px;">월 63,750원</span>)
+          </div>
+          <div style="font-size:13px; line-height:1.7; background:#F8FAFC; padding:12px; border-radius:8px; border:1px solid #E2E8F0;">
+            • <b>구성 :</b> <span class="txt-accent">방문형 체험단 120건</span> + <span class="txt-accent">블로그 기자단 30건</span><br>
+            • <b>무료 특전 무상 제공 :</b><br>
+            &nbsp;&nbsp; - <b>영수증/방문자 포토 리뷰</b> 실시간 지원<br>
+            &nbsp;&nbsp; - <b>네이버 플레이스 저장하기</b> 지수 케어<br>
+            &nbsp;&nbsp; - <b>트렌드 숏폼(클립) 영상 3건</b> 무상 제작<br>
+            &nbsp;&nbsp; - <b>매장 맞춤 빅데이터 분석 보고서</b> 제공
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title" style="font-size:17px;">🔹 B 베이직 패키지 (12개월)</div>
+          <div class="card-sub" style="font-size:14px; color:var(--navy-main); font-weight:800;">
+            총 <b>840,000원</b> (카드 12개월 할부 시 <b>월 70,000원</b>)
+          </div>
+          <div style="font-size:13px; line-height:1.7; background:#F8FAFC; padding:12px; border-radius:8px; border:1px solid #E2E8F0;">
+            • <b>구성 :</b> <b>방문형 체험단 60건</b> + <b>블로그 기자단 10건</b><br>
+            • <b>기본 제공 :</b> 영수증 리뷰 케어 + 플레이스 기본 세팅 가이드
           </div>
         </div>
       </div>
 
-      <!-- 3. 영업멘트 -->
+      <!-- 3. 대화 흐름 (클릭 시 확대 팝업 연동) -->
       <div id="tab-script" class="tab-content">
-        <div class="accordion-item open">
-          <div class="accordion-header" onclick="toggleAccordion(this)">
-            <span class="bold">📢 [오프닝] 친근/상큼 톤</span>
-            <span class="arrow">▼</span>
+        <div class="script-step-container">
+          
+          <div>
+            <span class="step-label">인사</span>
+            <div class="chat-bubble" onclick="openModal('인사', this.innerHTML)">
+              "안녕하세요 사장님~ 저는 <b>플로우마케팅</b>에서 체험단 진행하고 있는 담당자에요! 사장님 플레이스도 한번 살펴보기 됐는데, 잘 되어있는 부분도 있고 살짝 아쉬운 부분도 있더라고요! 10분만 시간 주실 수 있을까요?"
+            </div>
           </div>
-          <div class="accordion-body">
-            "안녕하세요 사장님~! 플로우마케팅 김희진 담당자입니다. 사장님 플레이스 매장 둘러보다가 노출 부분에서 몇 가지 보완하면 손님이 훨씬 늘 것 같아 반가운 마음에 전화드렸어요! 딱 1분만 시간 괜찮으실까요?"
+
+          <div>
+            <span class="step-label">플레이스 사진</span>
+            <div class="chat-bubble" onclick="openModal('플레이스 사진', this.innerHTML)">
+              "첫 사진이 손님 사진이던데, 어떤 마음으로 올려두신 거예요?"
+            </div>
+            <div class="chat-bubble" onclick="openModal('플레이스 사진', this.innerHTML)">
+              "아~ 손님 많은 거 보여주고 싶으셨던 거군요! 근데 <b>플레이스는 음식 사진이 훨씬 잘 먹혀요.</b> 다들 배고파서 들어오시는 거라 모바일에서도 음식 사진이 눈에 확 들어오거든요!"
+            </div>
+            <div class="chat-bubble" onclick="openModal('플레이스 사진', this.innerHTML)">
+              "<b>음식 사진 + 메뉴판 사진 + 3~7줄 소개글</b>, 여기에 <b>리뷰</b>까지 더해지면 노출 점수 관리하시는 데에 훨씬 도움이 돼요."
+            </div>
           </div>
-        </div>
-        <div class="accordion-item">
-          <div class="accordion-header" onclick="toggleAccordion(this)">
-            <span class="bold">👔 [오프닝] 전문가/신뢰 톤</span>
-            <span class="arrow">▼</span>
+
+          <div>
+            <span class="step-label">메뉴판</span>
+            <div class="chat-bubble" onclick="openModal('메뉴판', this.innerHTML)">
+              "메뉴판 가격이랑 이름은 깔끔한데 사진이 좀 부족해요! <b>사진 없으면 가격만 보고 망설이시는 분들</b> 많거든요."
+            </div>
           </div>
-          <div class="accordion-body">
-            "안녕하십니까 대표님, 플로우마케팅 상위노출 컨설팅팀입니다. 현재 매장의 지역 키워드 검색 노출 지수를 분석한 결과, 상위권 진입을 위한 핵심 지표 보완이 필요한 상황이라 직접 연락드렸습니다."
+
+          <div>
+            <span class="step-label">리뷰·경쟁사 비교</span>
+            <div class="chat-bubble" onclick="openModal('리뷰·경쟁사 비교', this.innerHTML)">
+              "리뷰가 좀 적으신 편이에요! 혹시 경쟁 업체 리뷰 개수 보신 적 있으세요?"
+            </div>
+            <div class="chat-bubble" onclick="openModal('리뷰·경쟁사 비교', this.innerHTML)">
+              "○○삼겹살집은 <b>블로그 2,301개 + 방문자 710개, 총 3천 개</b>인데 사장님은 <b>총 15개</b>예요. 거의 <b>200배 차이!</b> 이게 그대로 순위나 손님들 선택에 영향이 갈 수밖에 없어요."
+            </div>
           </div>
-        </div>
-        <div class="accordion-item">
-          <div class="accordion-header" onclick="toggleAccordion(this)">
-            <span class="bold">💡 [클로징] 확신과 제안</span>
-            <span class="arrow">▼</span>
+
+          <div>
+            <span class="step-label">체험단 소개</span>
+            <div class="chat-bubble" onclick="openModal('체험단 소개', this.innerHTML)">
+              "그래서 다들 체험단 진행해 보시는 거예요! 리뷰어분이 직접 방문해서 블로그에 리뷰랑 사진 남겨주시는데, 그 사진 <b>대표사진·메뉴사진으로도 바로 활용</b>하실 수 있어요."
+            </div>
           </div>
-          <div class="accordion-body">
-            "사장님, 저희는 단기성 광고가 아니라 실제 매장 방문 리뷰와 저장하기 지수를 함께 올려서 네이버 알고리즘에 맞게 순위를 지속 유지시켜 드립니다. 월 6만 원대로 플레이스 최적화 세팅까지 전부 다 알아서 챙겨드릴 테니 이번 기회에 저희 믿고 진행해 보시죠!"
+
+          <div>
+            <span class="step-label">패키지 제안·마무리</span>
+            <div class="chat-bubble" onclick="openModal('패키지 제안·마무리', this.innerHTML)">
+              "사장님 상황엔 <b>프리미엄 패키지</b>가 딱이에요! 방문형 체험단 120건 + 블로그 기자단 30건, 24개월에 <b>153만원(월 6만 3,750원)</b>인데, <b>87.3%가 이거 선택하시는 데는</b> 이유가 있더라고요."
+            </div>
+            <div class="chat-bubble" onclick="openModal('패키지 제안·마무리', this.innerHTML)">
+              "카드 할부도 되고 계좌로하시면 <b>5% 적립</b>도 돼요! 카드, 계좌 어떤 게 편하세요?"
+            </div>
           </div>
+
         </div>
       </div>
 
-      <!-- 4. 업체별 -->
+      <!-- 4. 업체별 팁 -->
       <div id="tab-industry" class="tab-content">
         <div class="card">
           <div class="card-title">🍕 요식업 / 맛집 매장</div>
-          <div style="font-size:12.5px;">
-            • <b>포인트:</b> 비주얼 중심 사진 + 영수증 포토 리뷰 + 플레이스 저장하기 필수 강조<br>
-            • <b>추천 멘트:</b> "맛집 검색 시 플레이스 상단에 예쁜 음식 사진과 포토 리뷰가 쌓여있어야 손님들이 고민 없이 방문합니다."
+          <div style="font-size:13px; line-height:1.6;">
+            • <b>핵심 :</b> 첫 화면 대표 사진(음식 사진) + 영수증 포토 리뷰<br>
+            • <b>멘트 :</b> "손님들이 플레이스에 들어왔을 때 가장 먼저 보는 게 음식 대표 사진이랑 실제 다녀간 포토 리뷰예요. 이 부분이 차있어야 방문 확률이 크게 높아집니다."
           </div>
         </div>
         <div class="card">
           <div class="card-title">💇‍♀️ 뷰티 / 미용 / 헤어 / 네일</div>
-          <div style="font-size:12.5px;">
-            • <b>포인트:</b> 인스타 감성 숏폼(클립) + 정성스러운 블로그 후기<br>
-            • <b>추천 멘트:</b> "뷰티 분야는 원장님 시술 비포/애프터 사진과 체험단 블로거의 꼼꼼한 후기가 예약률을 결정지어 줍니다."
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-title">🏥 병의원 / 피티샵 / 전문 업종</div>
-          <div style="font-size:12.5px;">
-            • <b>포인트:</b> 1천 명 이상 블로그 기자단 전문 원고 + 키워드 검색 최적화(SEO)<br>
-            • <b>추천 멘트:</b> "신뢰도가 중요한 업종인 만큼, 파워블로거급 인플루언서 기자단을 통해 전문적인 지식과 후기를 노출해야 신규 고객 신뢰를 얻습니다."
+          <div style="font-size:13px; line-height:1.6;">
+            • <b>핵심 :</b> 시술 비포/애프터 블로그 후기 + 숏폼(클립)<br>
+            • <b>멘트 :</b> "뷰티 쪽은 원장님 시술 비포/애프터 사진과 체험단 블로거의 꼼꼼한 이용 후기가 있어야 예약 결정을 망설이지 않게 됩니다."
           </div>
         </div>
       </div>
 
-      <!-- 5. 대응상황 -->
+      <!-- 5. 거절 대응 -->
       <div id="tab-objection" class="tab-content">
-        <div class="ai-btn-card">
-          <div style="font-size:12.5px; font-weight:700; color:#1E40AF; margin-bottom:6px;">⚡ 돌발 질문 받으셨을 때</div>
-          <a href="https://chatgpt.com/?q=%EB%A7%88%EC%BC%80%ED%8C%85%20%EC%96%B1%EC%97%85%20%EC%A5%B0%20%EA%B4%91%EA%B3%A0%EC%A3%BC%EA%B0%80%20%EB%8B%A4%EC%9D%8C%EA%B3%BC%20%EA%B0%99%EC%9D%B4%20%EA%B1%B0%EC%A0%88%ED%96%88%EC%96%B4%EC%9A%94.%20%EC%82%AC%EC%95%85%ED%95%98%EC%A7%80%20%EC%95%8A%EA%B3%A0%20%EB%8B%A4%EC%A0%95%ED%95%98%EA%B2%8C%20%EB%A7%88%EC%9D%8C%EC%9D%84%20%EB%8F%8C%EB%A6%B0%20%EC%84%A4%EB%93%9D%20%EB%A9%98%ED%8A%B8%203%EA%B0%9C%20%EC%BRecommendation%ED%95%B4%EC%A3%BC%EC%84%B8%EC%9A%94%3A%20" target="_blank" class="ai-btn">
-            🤖 ChatGPT 질문 바로가기
-          </a>
-        </div>
-        <div class="accordion-item open">
-          <div class="accordion-header" onclick="toggleAccordion(this)">
-            <span class="bold" style="color:var(--accent);">🛑 "바빠요 / 시간 없어요"</span>
-            <span class="arrow">▼</span>
+        <div class="card" onclick="openModal('거절대응', this.querySelector('div').innerHTML)" style="cursor:pointer;">
+          <div class="card-title" style="color:var(--accent);">🛑 "바빠요 / 시간 없어요" (클릭해서 확대)</div>
+          <div style="font-size:13px; line-height:1.6;">
+            "괜찮습니다 사장님! 바쁘신 시간 피해서 딱 30초만 말씀드릴게요. 지금 사장님 매장 플레이스에서 아쉽게 놓치고 계신 포인트 하나만 딱 짚어드려도 될까요?"
           </div>
-          <div class="accordion-body">
-            "괜찮습니다 사장님! 바쁘신 시간 피해서 핵심만 딱 30초만 말씀드릴게요. 사장님 플레이스 매장에서 지금 누수되고 있는 방문 고객 매출 포인트 하나만 짚어드릴까요?"
+        </div>
+        <div class="card" onclick="openModal('거절대응', this.querySelector('div').innerHTML)" style="cursor:pointer;">
+          <div class="card-title" style="color:var(--accent);">🛑 "광고 안 해요 / 해봤는데 효과 없었어요" (클릭해서 확대)</div>
+          <div style="font-size:13px; line-height:1.6;">
+            "네, 기존에 속상하셨던 사장님들 많이 뵈었습니다. 저희는 무작정 노출만 시키는 일회성 광고가 아니라 매장 사진과 리뷰 지수를 다듬어서 자연스럽게 손님이 늘 수 있도록 기반을 다져드리는 작업이에요."
           </div>
         </div>
       </div>
@@ -437,13 +575,59 @@
 
     </div>
 
-    <!-- 메모장 고정 패널 -->
+    <!-- 우측 패널 (영업 계산기 + 메모장) -->
     <div class="right-pane">
-      <div class="memo-panel">
-        <h3>📝 상담 실시간 메모장</h3>
-        <p>상담 내용을 적어두세요 (자동 저장)</p>
-        <textarea id="memoText" class="memo-area" placeholder="예) 강남 00식당 / 사장님 성함 / 프리미엄 관심 / 내일 오후 2시 재통화..."></textarea>
+      
+      <!-- 간편 영업 계산기 -->
+      <div class="side-card">
+        <h3>🧮 영업 실시간 계산기</h3>
+        <div class="calc-group">
+          <label>체험단 인원 선택</label>
+          <select id="calcExp" onchange="calculateTotal()">
+            <option value="0">선택 안함</option>
+            <option value="240000">30명 (24만원)</option>
+            <option value="360000">60명 (36만원)</option>
+            <option value="480000" selected>120명 (48만원) ★</option>
+            <option value="840000">240명 (84만원)</option>
+          </select>
+        </div>
+        <div class="calc-group">
+          <label>기자단 건수 선택</label>
+          <select id="calcReporter" onchange="calculateTotal()">
+            <option value="0">선택 안함</option>
+            <option value="800000">20건 (80만원)</option>
+            <option value="1050000" selected>30건 (105만원) ★</option>
+            <option value="1625000">50건 (162.5만원)</option>
+          </select>
+        </div>
+        <div class="calc-group">
+          <label>할부 개월 수</label>
+          <select id="calcMonths" onchange="calculateTotal()">
+            <option value="1">일시불</option>
+            <option value="6">6개월</option>
+            <option value="12">12개월</option>
+            <option value="24" selected>24개월 (추천)</option>
+          </select>
+        </div>
+
+        <div class="calc-result">
+          <div class="calc-result-row">
+            <span>합계 금액:</span>
+            <span id="resTotal">1,530,000원</span>
+          </div>
+          <div class="calc-result-row total">
+            <span>월 납입금:</span>
+            <span id="resMonthly">63,750원</span>
+          </div>
+        </div>
       </div>
+
+      <!-- 상담 메모장 -->
+      <div class="side-card memo-panel">
+        <h3>📝 실시간 메모장</h3>
+        <textarea id="memoText" class="memo-area" placeholder="상담 내용 적기 (자동 저장됨)...&#10;예) 00식당 / 대표님 / 프리미엄 관심 / 내일 오후 2시 재통화"></textarea>
+      </div>
+
     </div>
 
   </div>
@@ -477,9 +661,18 @@
     document.getElementById(tabId).classList.add('active');
   }
 
-  function toggleAccordion(headerElem) {
-    const item = headerElem.parentElement;
-    item.classList.toggle('open');
+  /* 멘트 확대 팝업 관련 함수 */
+  function openModal(categoryName, textContent) {
+    document.getElementById('modalCategory').innerText = '📌 ' + categoryName;
+    document.getElementById('modalTextContent').innerHTML = textContent;
+    document.getElementById('scriptModal').style.display = 'flex';
+  }
+
+  function closeModal(event) {
+    // 배경이나 닫기 버튼을 눌렀을 때만 닫히도록 처리
+    if(!event || event.target.id === 'scriptModal' || event.target.classList.contains('modal-close-btn')) {
+      document.getElementById('scriptModal').style.display = 'none';
+    }
   }
 
   const memoTextarea = document.getElementById('memoText');
@@ -487,6 +680,19 @@
   memoTextarea.addEventListener('input', () => {
     localStorage.setItem('pablo_sales_memo', memoTextarea.value);
   });
+
+  /* 실시간 금액 계산기 로직 */
+  function calculateTotal() {
+    const expVal = parseInt(document.getElementById('calcExp').value) || 0;
+    const reporterVal = parseInt(document.getElementById('calcReporter').value) || 0;
+    const months = parseInt(document.getElementById('calcMonths').value) || 1;
+
+    const total = expVal + reporterVal;
+    const monthly = Math.round(total / months);
+
+    document.getElementById('resTotal').innerText = total.toLocaleString() + '원';
+    document.getElementById('resMonthly').innerText = monthly.toLocaleString() + '원';
+  }
 
   function filterItems() {
     const query = document.getElementById('searchInput').value.toLowerCase();
@@ -496,35 +702,19 @@
     if (activeTab.id === 'tab-sheet') {
       const rows = activeTab.querySelectorAll('.data-table tr');
       rows.forEach((row, idx) => {
-        if(idx === 0) return; // 헤더 제외
+        if(idx === 0) return;
         row.style.display = row.innerText.toLowerCase().includes(query) ? '' : 'none';
       });
     } else {
-      const targets = activeTab.querySelectorAll('.card, .accordion-item');
+      const targets = activeTab.querySelectorAll('.card, .chat-bubble');
       targets.forEach(el => {
         el.style.display = el.innerText.toLowerCase().includes(query) ? 'block' : 'none';
       });
     }
   }
 
-  // 발급받으신 구글 앱스 스크립트 URL
+  // 구글 앱스 스크립트 연동
   const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyvpzY5MQdM7YnGyXt0eE5RN15QuXPoXjSGFf8DswcVcbvAt1kzc4V1tg7nzrgXbR4/exec';
-
-  // 업종별 스크립트 자동 생성 지원 (C열 입력값이 없을 경우 대비용)
-  function getAutoScript(name, category) {
-    if(!category) category = '';
-    const cat = category.toString().trim();
-
-    if (cat.includes('맛집') || cat.includes('요식') || cat.includes('식당') || cat.includes('카페')) {
-      return `<b>[오프닝]</b> "안녕하세요 사장님! ${name} 플레이스 사진이랑 리뷰 조금만 보완하면 손님이 훨씬 몰릴 것 같아 연락드렸어요!"<br><b>[제안]</b> "음식 포토 리뷰랑 저장하기 지수 올려서 검색 1페이지 유지 도와드릴게요."`;
-    } else if (cat.includes('뷰티') || cat.includes('미용') || cat.includes('헤어') || cat.includes('네일')) {
-      return `<b>[오프닝]</b> "원장님 안녕하세요! ${name} 시술 퀄리티가 너무 좋으셔서 블로그/숏폼 체험단 제안차 연락드렸어요!"<br><b>[제안]</b> "체험단+숏폼 연동으로 예약 문의 대폭 올려드릴게요."`;
-    } else if (cat.includes('헬스') || cat.includes('피티') || cat.includes('운동') || cat.includes('병원')) {
-      return `<b>[오프닝]</b> "대표님 안녕하십니까! ${name} 지역 키워드 검색 노출 지수 보완 건으로 전화드렸습니다."<br><b>[제안]</b> "1천 이상 인플루언서 기자단으로 전문 원고 노출 진행해 드립니다."`;
-    } else {
-      return `<b>[오프닝]</b> "안녕하세요 대표님! ${name} 네이버 플레이스 마케팅 최적화 세팅 건으로 연락드렸습니다!"<br><b>[제안]</b> "방문자 리뷰 및 저장 지수 상승을 월 6만원대에 맞춤 관리해 드립니다."`;
-    }
-  }
 
   function loadSheetData() {
     const container = document.getElementById('sheetDataContainer');
@@ -535,30 +725,20 @@
       .then(data => {
         if(data && data.length > 0) {
           let html = '<table class="data-table">';
-          
-          // 헤더 생성 (A:업체명, B:업종, C:대응 멘트, D:비고)
-          html += '<tr>';
-          html += '<th>업체명</th>';
-          html += '<th>업종</th>';
-          html += '<th>💬 대응 멘트 / 스크립트</th>';
-          html += '<th>비고</th>';
-          html += '</tr>';
+          html += '<tr><th>업체명</th><th>업종</th><th>💬 대응 멘트 (클릭 시 확대)</th><th>비고</th></tr>';
 
-          // 데이터 행 생성 (1행은 헤더이므로 index 1부터 시작)
           for(let i = 1; i < data.length; i++) {
             let row = data[i];
             let name = row[0] || '미입력';
             let category = row[1] || '일반';
-            let userScript = row[2] || ''; // C열에 적은 내용
-            let memo = row[3] || '-';      // D열 비고
+            let userScript = row[2] || '등록된 대응 멘트가 없습니다.';
+            let memo = row[3] || '-';
 
-            // C열 내용이 비어있으면 자동 생성 스크립트 제공
-            let scriptContent = userScript ? userScript : getAutoScript(name, category);
-
-            html += '<tr>';
+            // 구글 시트 멘트 칸도 클릭하면 확대되도록 모달 함수 연결
+            html += '<tr style="cursor:pointer;" onclick="openModal(\'' + name + ' (' + category + ')\', this.querySelector(\'.sheet-script\').innerHTML)">';
             html += `<td style="font-weight:700; color:var(--navy-main);">${name}</td>`;
             html += `<td><span class="badge" style="background:#4B5563;">${category}</span></td>`;
-            html += `<td><div class="script-box">${scriptContent}</div></td>`;
+            html += `<td><div class="sheet-script" style="background:#F8FAFC; padding:6px 8px; border-left:3px solid var(--accent); font-size:12px;">${userScript}</div></td>`;
             html += `<td style="font-size:11px; color:#6B7280;">${memo}</td>`;
             html += '</tr>';
           }
@@ -566,12 +746,11 @@
           html += '</table>';
           container.innerHTML = html;
         } else {
-          container.innerHTML = '<p style="font-size:12px; color:var(--sub-text);">구글 시트에 입력된 내용이 없습니다. 시트에 내용을 작성해 주세요!</p>';
+          container.innerHTML = '<p style="font-size:12px; color:var(--sub-text);">구글 시트에 입력된 내용이 없습니다.</p>';
         }
       })
       .catch(err => {
-        console.error('시트 데이터를 불러오지 못했습니다:', err);
-        container.innerHTML = '<p style="font-size:12px; color:red;">데이터를 불러오는 중 오류가 발생했습니다. 구글 앱 스크립트를 재배포했는지 확인해 주세요.</p>';
+        container.innerHTML = '<p style="font-size:12px; color:red;">시트 데이터를 불러오지 못했습니다.</p>';
       });
   }
 </script>
