@@ -238,10 +238,10 @@
     border-radius: 12px;
     padding: 14px;
   }
-  .calc-panel h3 { margin: 0 0 6px 0; font-size: 14px; font-weight: 800; color: var(--navy-main); }
-  .calc-row { display: flex; gap: 6px; margin-bottom: 8px; align-items: center; font-size: 12px; }
-  .calc-row input { width: 80px; padding: 6px; border: 1px solid var(--border-line); border-radius: 6px; text-align: right; }
-  .calc-result { background: #F8F9FA; padding: 8px; border-radius: 6px; font-size: 12.5px; font-weight: 700; color: var(--accent); text-align: right; }
+  .calc-panel h3 { margin: 0 0 8px 0; font-size: 14px; font-weight: 800; color: var(--navy-main); }
+  .calc-row { display: flex; flex-direction: column; gap: 4px; margin-bottom: 8px; font-size: 12px; }
+  .calc-row select { width: 100%; padding: 6px; border: 1px solid var(--border-line); border-radius: 6px; background: #fff; font-size: 12px; outline: none; }
+  .calc-result { background: #FFF3ED; border: 1px solid #FFD6C4; padding: 10px; border-radius: 6px; font-size: 12.5px; color: var(--accent); margin-top: 6px; line-height: 1.5; }
 
   .memo-panel {
     background: #fff;
@@ -323,7 +323,7 @@
         <div class="tab-btn" onclick="switchTab('tab-sheet')">구글시트</div>
       </div>
 
-      <!-- 1. 견적서 탭 (원본 보존) -->
+      <!-- 1. 견적서 탭 -->
       <div id="tab-quote" class="tab-content active">
         <div class="card">
           <span class="badge">광고주 82.7% 계약</span>
@@ -365,7 +365,7 @@
         </div>
       </div>
 
-      <!-- 2. 패키지 탭 (원본 보존) -->
+      <!-- 2. 패키지 탭 -->
       <div id="tab-package" class="tab-content">
         <div class="accordion-item open">
           <div class="accordion-header" onclick="toggleAccordion(this)">
@@ -457,11 +457,11 @@
         </div>
       </div>
 
-      <!-- 4. 대응상황 탭 -->
+      <!-- 4. 대응상황 탭 (오타 수정된 GPT 링크 프롬프트 적용) -->
       <div id="tab-objection" class="tab-content">
         <div class="ai-btn-card">
           <div style="font-size:12.5px; font-weight:700; color:#1E40AF; margin-bottom:6px;">⚡ 작성된 멘트에 없는 질문을 받았을 때</div>
-          <a href="https://chatgpt.com/?q=%EB%A7%88%EC%BC%80%ED%8C%85%20%EC%96%B1%EC%97%85%20%EC%A4%91%20%EA%B4%91%EA%B3%A0%EC%A3%BC%EA%B0%80%20%EB%8B%A4%EC%9D%8C%EA%B3%BC%20%EA%B0%99%EC%9D%B4%20%EA%B1%B0%EC%A0%88%ED%96%88%EC%96%B4%EC%9A%94.%20%EC%82%AC%EC%95%85%ED%95%98%EC%A7%80%20%EC%95%8A%EA%B3%A0%20%EB%8B%A4%EC%9D%95%ED%95%98%EA%B2%8C%20%EB%A7%88%EC%9D%8C%EC%9D%84%20%EB%8F%8C%EB%A6%B0%20%EC%84%A4%EB%93%9D%20%EB%A9%98%ED%8A%B8%203%EA%B0%9C%20%EC%B6%94%EC%B2%9C%ED%95%B4%EC%A3%BC%EC%84%B8%EC%9A%94%3A%20" target="_blank" class="ai-btn">
+          <a href="https://chatgpt.com/?q=%EB%A7%88%EC%BC%80%ED%8C%85%20%EC%98%81%EC%97%85%20%EC%A4%91%20%EA%B4%91%EA%B3%A0%EC%A3%BC%EA%B0%80%20%EB%8B%A4%EC%9D%8C%EA%B3%BC%20%EA%B0%99%EC%9D%B4%20%EA%B1%B0%EC%A0%88%ED%96%88%EC%96%B4%EC%9A%94.%20%EC%82%AC%EC%95%85%ED%95%98%EC%A7%80%20%EC%95%8A%EA%B3%A0%20%EB%8B%A4%EC%9D%95%ED%95%98%EA%B2%8C%20%EB%A7%88%EC%9D%8C%EC%9D%84%20%EB%8E%80%EB%A0%88%20%EC%84%A4%EB%93%9D%20%EB%A9%98%ED%8A%B8%203%EA%B0%9C%20%EC%B6%94%EC%B2%9C%ED%95%B4%EC%A3%BC%EC%84%B8%EC%9A%94%3A%20" target="_blank" class="ai-btn">
             🤖 ChatGPT에 실시간 돌발 질문하기 (무료)
           </a>
         </div>
@@ -495,7 +495,7 @@
         </div>
       </div>
 
-      <!-- 5. 용어사전 탭 (숏폼, 빅데이터 보고서 등 대폭 보강) -->
+      <!-- 5. 용어사전 탭 -->
       <div id="tab-glossary" class="tab-content">
         <div class="card">
           <div class="card-title">📖 필수 마케팅 용어 사전</div>
@@ -510,7 +510,7 @@
         </div>
       </div>
 
-      <!-- 6. 구글시트 탭 (맞춤 멘트 생성) -->
+      <!-- 6. 구글시트 탭 -->
       <div id="tab-sheet" class="tab-content">
         <div class="card" style="border: 1.5px solid var(--accent); background: #FFFBF9;">
           <div class="card-title" style="color: var(--accent);">📊 구글시트 연동 맞춤 스크립트 생성기</div>
@@ -528,21 +528,59 @@
 
     </div>
 
-    <!-- 우측 패널 (계산기 + 메모장) -->
+    <!-- 우측 패널 (분리된 선택형 계산기 + 메모장) -->
     <div class="right-pane">
       
-      <!-- 영업 계산기 (메모장 위 배치) -->
+      <!-- 실전 영업 계산기 (추가 옵션 & 심사 옵션 분리형) -->
       <div class="calc-panel">
         <h3>🧮 실전 영업 계산기</h3>
+        
         <div class="calc-row">
-          <span>단가(원):</span>
-          <input type="number" id="calcPrice" value="4000" oninput="calculateTotal()">
+          <span>1. 체험단 인원 선택:</span>
+          <select id="calcExp" onchange="calculateTotal()">
+            <option value="0|0">없음 (0원)</option>
+            <option value="5|50000">5명 (50,000원)</option>
+            <option value="30|240000">30명 (240,000원)</option>
+            <option value="60|360000">60명 (360,000원)</option>
+            <option value="120|480000" selected>120명 ★ (480,000원)</option>
+            <option value="240|840000">240명 (840,000원)</option>
+          </select>
         </div>
+
         <div class="calc-row">
-          <span>수량(인원/건):</span>
-          <input type="number" id="calcQty" value="120" oninput="calculateTotal()">
+          <span>2. 추가 옵션 선택:</span>
+          <select id="calcAddOpt" onchange="calculateTotal()">
+            <option value="0">없음 (0원)</option>
+            <option value="4800">A 방문자+저장 (4,800원)</option>
+            <option value="3500">B 방문자 리뷰 (3,500원)</option>
+            <option value="4000">B2 포토 방문자 리뷰 (4,000원)</option>
+            <option value="2500">C 플레이스 저장 (2,500원)</option>
+          </select>
         </div>
-        <div class="calc-result" id="calcOutput">총 예상금액: 480,000원</div>
+
+        <div class="calc-row">
+          <span>3. 체험단 심사 옵션 선택:</span>
+          <select id="calcReviewOpt" onchange="calculateTotal()">
+            <option value="0">없음 (기본 심사)</option>
+            <option value="9600">D 준최5 이상 심사 (+9,600원)</option>
+            <option value="19200">E 최적1 이상 심사 (+19,200원)</option>
+          </select>
+        </div>
+
+        <div class="calc-row">
+          <span>4. 패키지 선택:</span>
+          <select id="calcPkg" onchange="calculateTotal()">
+            <option value="0|1|단독 진행">없음 (단독 구성)</option>
+            <option value="1530000|24|👑 A 프리미엄 (24개월)" selected>👑 A 프리미엄 패키지 (1,530,000원 / 24개월)</option>
+            <option value="1065000|12|💎 B 베이직 (12개월)">💎 B 베이직 패키지 (1,065,000원 / 12개월)</option>
+            <option value="634000|6|🌱 C 라이트 (6개월)">🌱 C 라이트 패키지 (634,000원 / 6개월)</option>
+          </select>
+        </div>
+
+        <div class="calc-result" id="calcOutput">
+          <b>총 금액:</b> 1,530,000원<br>
+          <b>월 할부금:</b> 월 63,750원 (24개월 기준)
+        </div>
       </div>
 
       <!-- 상담 메모장 -->
@@ -588,12 +626,37 @@
     item.classList.toggle('open');
   }
 
-  // 실시간 계산기 함수
+  // 선택형 계산기 로직 (추가 옵션과 심사 옵션 분리 반영)
   function calculateTotal() {
-    const p = parseFloat(document.getElementById('calcPrice').value) || 0;
-    const q = parseFloat(document.getElementById('calcQty').value) || 0;
-    const total = p * q;
-    document.getElementById('calcOutput').innerText = '총 예상금액: ' + total.toLocaleString() + '원';
+    const expVal = document.getElementById('calcExp').value.split('|');
+    const expPrice = parseInt(expVal[1]) || 0;
+
+    const addOptPrice = parseInt(document.getElementById('calcAddOpt').value) || 0;
+    const reviewOptPrice = parseInt(document.getElementById('calcReviewOpt').value) || 0;
+
+    const pkgVal = document.getElementById('calcPkg').value.split('|');
+    const pkgPrice = parseInt(pkgVal[0]) || 0;
+    const pkgMonths = parseInt(pkgVal[1]) || 1;
+    const pkgName = pkgVal[2];
+
+    let total = 0;
+    let monthlyText = '';
+
+    if (pkgPrice > 0) {
+      // 패키지 선택 시 패키지 금액 + 추가 옵션 및 심사 옵션 합산
+      total = pkgPrice + addOptPrice + reviewOptPrice;
+      const monthly = Math.round(total / pkgMonths);
+      monthlyText = `<b>패키지:</b> ${pkgName}<br><b>월 할부금:</b> 약 ${monthly.toLocaleString()}원 (${pkgMonths}개월 기준)`;
+    } else {
+      // 단독 선택인 경우 체험단 + 추가옵션 + 심사옵션 모두 합산
+      total = expPrice + addOptPrice + reviewOptPrice;
+      monthlyText = `<b>구성:</b> 단독 선택<br><b>일시불 / 분할:</b> ${total.toLocaleString()}원`;
+    }
+
+    document.getElementById('calcOutput').innerHTML = `
+      <b>총 예상금액:</b> <span style="font-size:14px; font-weight:800;">${total.toLocaleString()}원</span><br>
+      ${monthlyText}
+    `;
   }
 
   const memoTextarea = document.getElementById('memoText');
@@ -619,12 +682,17 @@
 
     resultDiv.style.display = 'block';
     resultDiv.innerHTML = `
-      <b>[인사]</b> 안녕하세요 사장님~ 플로우마케팅 담당자예요! ${name} 플레이스 둘러보다가 보완하면 훨씬 잘 될 포인트가 보여서 연락드렸습니다. 10분만 시간 괜찮으실까요?<br><br>
-      <b>[피드백]</b> 플레이스 사진이나 소개글 구성을 조금만 손보면 ${cat} 특유의 매력이 훨씬 잘 살아나거든요. 여기에 리뷰까지 뒷받침되면 노출 점수가 확 올라갑니다.<br><br>
-      <b>[패키지 제안]</b> 사장님 매장엔 <b>프리미엄 패키지</b>(방문 체험단 120명 + 블로그 30건)가 딱 맞습니다. 24개월 기준 월 6만 원대로 인원과 노출 건수를 확실하게 보장해 드려요!<br><br>
-      <b>[클로징]</b> 카드 할부와 계좌 적립 중 어떤 쪽이 편하신가요?
+      <b>[인사 & 확신 부여]</b> 안녕하세요 사장님~ 플로우마케팅 담당자입니다! ${name} 플레이스를 면밀히 분석해 보니, <b>실행 구조와 노출 세팅만 확실하게 잡아드리면 충분히 상위권으로 도약할 수 있는 폭발력</b>이 보입니다. 딱 10분만 확신을 가지고 들어봐 주실 수 있을까요?<br><br>
+      <b>[진단 피드백]</b> 현재 ${cat} 특성에 맞는 시각적 연출과 검색 유입 고리가 살짝 아쉽습니다. 이 부분을 보완하고 실제 유저들의 리뷰 데이터가 탄탄하게 쌓이면 노출 점수와 유입량이 확실하게 달라집니다.<br><br>
+      <b>[패키지 제안]</b> 가장 많은 사장님들이 선택하고 확실한 효과를 보고 계신 <b>프리미엄 패키지</b>(방문 체험단 120명 + 블로그 30건)를 추천드립니다. 24개월 동안 월 6만 원대로 인원과 노출 건수를 계약서처럼 확실하게 보장해 드립니다.<br><br>
+      <b>[클로징]</b> 부담 없으시도록 카드 무이자 할부와 계좌 적립 혜택 모두 도와드리고 있는데, 어떤 쪽으로 편하게 진행 도와드릴까요?
     `;
   }
+
+  // 페이지 로드시 계산기 초기 실행
+  window.onload = function() {
+    calculateTotal();
+  };
 </script>
 
 </body>
