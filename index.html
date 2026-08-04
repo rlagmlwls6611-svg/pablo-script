@@ -1,584 +1,350 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>기획팀 A2부사수 스크립트</title>
-<style>
-  :root {
-    --bg-paper: #F4F5F7;
-    --navy-main: #1B2A4A;
-    --card-bg: #FFFFFF;
-    --accent: #E0632A;
-    --accent-soft: #FFF3ED;
-    --border-line: #DEDAD0;
-    --text-color: #1B2A4A;
-    --sub-text: #6B7280;
-    --highlight-blue: #0052CC;
-    --highlight-bg: #DEEBFF;
-  }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0;
-    padding: 16px;
-    background: var(--bg-paper);
-    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Malgun Gothic', sans-serif;
-    color: var(--text-color);
-    line-height: 1.5;
-  }
-
-  /* 비밀번호 잠금 화면 */
-  #authOverlay {
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: var(--navy-main);
-    z-index: 9999;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-  }
-  .auth-card {
-    background: #fff;
-    padding: 30px 24px;
-    border-radius: 16px;
-    width: 100%;
-    max-width: 360px;
-    text-align: center;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-  }
-  .auth-card h2 { margin: 0 0 8px; font-size: 18px; color: var(--navy-main); }
-  .auth-card p { font-size: 13px; color: var(--sub-text); margin-bottom: 20px; }
-  .auth-card input {
-    width: 100%;
-    padding: 12px;
-    font-size: 16px;
-    border: 1.5px solid var(--border-line);
-    border-radius: 10px;
-    outline: none;
-    text-align: center;
-    letter-spacing: 4px;
-    margin-bottom: 12px;
-  }
-  .auth-card button {
-    width: 100%;
-    padding: 12px;
-    background: var(--accent);
-    color: #fff;
-    border: none;
-    border-radius: 10px;
-    font-size: 15px;
-    font-weight: 700;
-    cursor: pointer;
-  }
-  .auth-error { color: #dc2626; font-size: 12px; margin-top: 8px; display: none; }
-
-  /* 메인 레이아웃 */
-  .main-content { display: none; }
-  .main-content.unlocked { display: block; }
-
-  .app-layout {
-    display: flex;
-    gap: 16px;
-    max-width: 1280px;
-    margin: 0 auto;
-  }
-  .left-pane { flex: 1; min-width: 0; }
-  .right-pane {
-    width: 320px;
-    position: sticky;
-    top: 16px;
-    height: calc(100vh - 32px);
-    display: flex;
-    flex-direction: column;
-  }
-
-  /* 헤더 */
-  .header {
-    background: var(--navy-main);
-    color: #fff;
-    border-radius: 12px;
-    padding: 16px 20px;
-    margin-bottom: 12px;
-  }
-  .header h1 { margin: 0; font-size: 20px; font-weight: 800; }
-  .header p { margin: 4px 0 0; font-size: 13px; color: #C7CEDE; }
-
-  /* 검색창 */
-  .search-box { margin-bottom: 12px; }
-  .search-box input {
-    width: 100%;
-    padding: 10px 14px;
-    font-size: 13.5px;
-    border: 1.5px solid var(--border-line);
-    border-radius: 10px;
-    outline: none;
-    background: #fff;
-  }
-
-  /* AI 버튼 전용 스타일 */
-  .ai-btn-card {
-    background: #EFF6FF;
-    border: 1.5px solid #3B82F6;
-    border-radius: 10px;
-    padding: 12px;
-    margin-bottom: 12px;
-    text-align: center;
-  }
-  .ai-btn {
-    display: inline-block;
-    width: 100%;
-    padding: 10px;
-    background: #2563EB;
-    color: #fff;
-    text-decoration: none;
-    font-weight: 700;
-    font-size: 13.5px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(37,99,235,0.2);
-  }
-
-  /* 탭 네비게이션 */
-  .tab-nav {
-    display: flex;
-    gap: 6px;
-    margin-bottom: 12px;
-    overflow-x: auto;
-  }
-  .tab-btn {
-    flex: 1;
-    min-width: 75px;
-    padding: 10px 4px;
-    text-align: center;
-    background: #fff;
-    border: 1px solid var(--border-line);
-    border-radius: 8px;
-    font-size: 13px;
-    font-weight: 700;
-    cursor: pointer;
-    color: var(--text-color);
-    white-space: nowrap;
-  }
-  .tab-btn.active {
-    background: var(--navy-main);
-    color: #fff;
-    border-color: var(--navy-main);
-  }
-
-  .tab-content { display: none; }
-  .tab-content.active { display: block; }
-
-  /* 카드 및 테이블 */
-  .card {
-    background: var(--card-bg);
-    border: 1px solid var(--border-line);
-    border-radius: 10px;
-    padding: 14px;
-    margin-bottom: 12px;
-  }
-  .card-title { font-size: 15px; font-weight: 800; color: var(--navy-main); margin-bottom: 6px; }
-  .card-sub { font-size: 12px; color: var(--sub-text); margin-bottom: 10px; }
-
-  .data-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 12px;
-    margin-bottom: 8px;
-  }
-  .data-table th, .data-table td {
-    padding: 7px 6px;
-    text-align: right;
-    border-bottom: 1px solid #EAE8E1;
-  }
-  .data-table th { background: #F8F9FA; color: var(--navy-main); font-weight: 700; }
-  .data-table th:first-child, .data-table td:first-child { text-align: left; }
-  .data-table tr.important td {
-    background: var(--highlight-bg);
-    color: var(--highlight-blue);
-    font-weight: 800;
-  }
-  .bold { font-weight: 800; }
-
-  /* 아코디언 */
-  .accordion-item {
-    background: #fff;
-    border: 1px solid var(--border-line);
-    border-radius: 8px;
-    margin-bottom: 8px;
-    overflow: hidden;
-  }
-  .accordion-header {
-    padding: 12px 14px;
-    font-size: 13.5px;
-    font-weight: 700;
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: #fff;
-  }
-  .accordion-header:hover { background: #F9FAFB; }
-  .accordion-body {
-    display: none;
-    padding: 12px 14px;
-    background: #F8F9FA;
-    border-top: 1px solid var(--border-line);
-    font-size: 13px;
-    line-height: 1.6;
-  }
-  .accordion-item.open .accordion-body { display: block; }
-  .accordion-item.open .arrow { transform: rotate(180deg); }
-  .arrow { transition: transform 0.2s; font-size: 10px; }
-
-  /* 메모장 패널 */
-  .memo-panel {
-    background: #fff;
-    border: 1px solid var(--border-line);
-    border-radius: 12px;
-    padding: 14px;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-  }
-  .memo-panel h3 { margin: 0 0 6px 0; font-size: 14px; font-weight: 800; color: var(--navy-main); }
-  .memo-panel p { margin: 0 0 10px 0; font-size: 11px; color: var(--sub-text); }
-  .memo-area {
-    flex: 1;
-    width: 100%;
-    padding: 10px;
-    border: 1px solid var(--border-line);
-    border-radius: 8px;
-    font-size: 12.5px;
-    resize: none;
-    outline: none;
-    font-family: inherit;
-    line-height: 1.5;
-  }
-
-  .badge {
-    display: inline-block;
-    background: var(--accent);
-    color: #fff;
-    font-size: 10.5px;
-    font-weight: 700;
-    padding: 2px 6px;
-    border-radius: 4px;
-    margin-bottom: 6px;
-  }
-
-  @media (max-width: 768px) {
-    .app-layout { flex-direction: column; }
-    .right-pane { width: 100%; position: static; height: 250px; }
-  }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>파블로체험단 영업 스크립트 대시보드</title>
+    <style>
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+            background-color: #f4f6f8;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .card {
+            background: #ffffff;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
+        }
+        h1 {
+            font-size: 24px;
+            color: #1a1a1a;
+            margin-top: 0;
+            border-bottom: 3px solid #4a90e2;
+            padding-bottom: 10px;
+        }
+        h2 {
+            font-size: 20px;
+            color: #2c3e50;
+            margin-top: 0;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 8px;
+        }
+        h3 {
+            font-size: 16px;
+            color: #4a90e2;
+            margin-top: 15px;
+            margin-bottom: 5px;
+        }
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        input, select, button {
+            padding: 12px;
+            font-size: 15px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+        }
+        input[type="text"] {
+            flex: 2;
+            min-width: 200px;
+        }
+        select {
+            flex: 1;
+            min-width: 150px;
+            background-color: #fff;
+        }
+        button {
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background-color: #357abd;
+        }
+        .result-box {
+            background-color: #eef6ff;
+            border: 1px solid #b6d4fe;
+            border-radius: 8px;
+            padding: 20px;
+            white-space: pre-line;
+            font-size: 15px;
+            margin-top: 15px;
+        }
+        .script-box {
+            background-color: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 15px;
+            white-space: pre-line;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+        .qa-item {
+            background-color: #fff;
+            border: 1px solid #e0e0e0;
+            border-left: 4px solid #4a90e2;
+            border-radius: 4px;
+            padding: 15px;
+            margin-bottom: 12px;
+        }
+        .qa-title {
+            font-weight: bold;
+            color: #d9534f;
+            margin-bottom: 5px;
+        }
+        .qa-ans {
+            color: #2c3e50;
+            white-space: pre-line;
+        }
+        .copy-btn {
+            background-color: #2eb85c;
+            margin-top: 10px;
+        }
+        .copy-btn:hover {
+            background-color: #249349;
+        }
+        .tag {
+            display: inline-block;
+            background: #e1ecf4;
+            color: #39739d;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+    </style>
 </head>
 <body>
 
-<!-- 비밀번호 잠금 -->
-<div id="authOverlay">
-  <div class="auth-card">
-    <h2>🔒 비밀번호 입력</h2>
-    <p>기획팀 A2부사수 스크립트 접속을 위해 입력하세요.</p>
-    <input type="password" id="pwInput" placeholder="비밀번호" onkeyup="if(event.keyCode===13) checkPw()">
-    <button onclick="checkPw()">확인</button>
-    <div id="authError" class="auth-error">비밀번호가 올바르지 않습니다.</div>
-  </div>
-</div>
+<div class="container">
 
-<!-- 메인 앱 컨텐츠 -->
-<div id="mainContent" class="main-content">
-  <div class="app-layout">
-    
-    <!-- 좌측 정보 영역 -->
-    <div class="left-pane">
-      <div class="header">
-        <h1>기획팀 A2부사수 스크립트</h1>
-        <p>담당자 : 김희진 사원 (010 - 0000 - 0000)</p>
-      </div>
-
-      <!-- 2번 기능: 실시간 빠른 키워드 검색창 -->
-      <div class="search-box">
-        <input type="text" id="searchInput" onkeyup="filterItems()" placeholder="🔍 검색어 입력 (예: 바빠요, 가격, SEO, AI, 프리미엄...)">
-      </div>
-
-      <!-- 상단 탭 메뉴 -->
-      <div class="tab-nav">
-        <div class="tab-btn active" onclick="switchTab('tab-quote')">견적서</div>
-        <div class="tab-btn" onclick="switchTab('tab-package')">패키지</div>
-        <div class="tab-btn" onclick="switchTab('tab-script')">영업멘트</div>
-        <div class="tab-btn" onclick="switchTab('tab-objection')">대응상황</div>
-        <div class="tab-btn" onclick="switchTab('tab-glossary')">용어사전</div>
-      </div>
-
-      <!-- 1. 견적서 탭 -->
-      <div id="tab-quote" class="tab-content active">
+    <!-- ⚡ 자동 생성기 카드 -->
+    <div class="card">
+        <h1>⚡ 타자만 치면 완성! 업종별 맞춤 스크립트 생성기</h1>
+        <p style="font-size:14px; color:#666;">업체명과 업종을 선택하시면 매장 맞춤 오프닝 스크립트가 바로 만들어집니다.</p>
         
-        <!-- 방문형 체험단 -->
-        <div class="card">
-          <span class="badge">광고주 82.7% 계약</span>
-          <div class="card-title">방문형 체험단 (A1)</div>
-          <div class="card-sub">블로그, 인스타, 숏폼 포토 호환 가능</div>
-          <table class="data-table">
-            <tr><th>인원</th><th>원가</th><th>할인율</th><th>할인가</th><th>인당</th></tr>
-            <tr><td>240명</td><td>2,400,000원</td><td>65%</td><td>840,000원</td><td>3,500원</td></tr>
-            <tr class="important"><td><span class="bold">120명 ★</span></td><td>1,200,000원</td><td>60%</td><td><span class="bold">480,000원</span></td><td>4,000원</td></tr>
-            <tr><td>60명</td><td>600,000원</td><td>40%</td><td>360,000원</td><td>6,000원</td></tr>
-            <tr><td>30명</td><td>300,000원</td><td>20%</td><td>240,000원</td><td>8,000원</td></tr>
-            <tr><td>5명</td><td>50,000원</td><td>0%</td><td>50,000원</td><td>10,000원</td></tr>
-          </table>
+        <div class="input-group">
+            <input type="text" id="storeName" placeholder="업체명을 입력하세요 (예: 민지네일, 행복한갈비)">
+            <select id="industry">
+                <option value="food">음식점 / 맛집</option>
+                <option value="nail">네일샵 / 뷰티</option>
+                <option value="semi">반영구 / 특수뷰티</option>
+                <option value="general">일반 / 기타 업종</option>
+            </select>
+            <button onclick="generateScript()">맞춤 스크립트 생성</button>
         </div>
 
-        <!-- 블로그 기자단 -->
-        <div class="card">
-          <span class="badge">광고주 92.3% 계약</span>
-          <div class="card-title">블로그 기자단 (1천 이상)</div>
-          <div class="card-sub">파워블로거급 / 10건 이상 시 대필료 면제 (건당 2만원)</div>
-          <table class="data-table">
-            <tr><th>건수</th><th>원가</th><th>할인율</th><th>할인가</th><th>건당</th></tr>
-            <tr><td>50건</td><td>2,500,000원</td><td>35%</td><td>1,625,000원</td><td>32,500원</td></tr>
-            <tr class="important"><td><span class="bold">30건 ★</span></td><td>1,500,000원</td><td>30%</td><td><span class="bold">1,050,000원</span></td><td>35,000원</td></tr>
-            <tr><td>20건</td><td>1,000,000원</td><td>20%</td><td>800,000원</td><td>40,000원</td></tr>
-            <tr><td>10건</td><td>500,000원</td><td>10%</td><td>450,000원</td><td>45,000원</td></tr>
-            <tr><td>3건</td><td>150,000원</td><td>0%</td><td>150,000원</td><td>50,000원</td></tr>
-          </table>
-        </div>
+        <div id="scriptOutput" class="result-box" style="display:none;"></div>
+        <button id="copyBtn" class="copy-btn" style="display:none;" onclick="copyToClipboard()">📋 스크립트 복사하기</button>
+    </div>
 
-        <!-- 추가 옵션 -->
-        <div class="card">
-          <div class="card-title">추가 옵션 & 체험단 심사 옵션</div>
-          <table class="data-table">
-            <tr><th>옵션 종류</th><th>원가</th><th>할인율</th><th>할인가</th></tr>
-            <tr class="important"><td><span class="bold">A 방문자+저장</span></td><td>12,000원</td><td>60%</td><td><span class="bold">4,800원</span></td></tr>
-            <tr><td>B 방문자 리뷰</td><td>7,000원</td><td>50%</td><td>3,500원</td></tr>
-            <tr><td>B2 포토 방문자 리뷰</td><td>8,000원</td><td>50%</td><td>4,000원</td></tr>
-            <tr><td>C 플레이스 저장</td><td>5,000원</td><td>50%</td><td>2,500원</td></tr>
-          </table>
-          <div style="font-size:11.5px; color:var(--sub-text); margin-top:6px;">
-            * 체험단 심사: D 준최5 이상(2배) / E 최적1 이상(4배)
-          </div>
-        </div>
-      </div>
-
-      <!-- 2. 패키지 탭 -->
-      <div id="tab-package" class="tab-content">
+    <!-- 📖 1. 기본 영업 스크립트 (5가지 톤앤매너) -->
+    <div class="card">
+        <h2>1. 기본 영업 스크립트 (5가지 톤앤매너)</h2>
         
-        <!-- A 프리미엄 -->
-        <div class="accordion-item open">
-          <div class="accordion-header" onclick="toggleAccordion(this)">
-            <div>
-              <span class="badge" style="background:var(--navy-main);">87.3% 선택</span>
-              <div class="bold" style="font-size:15px; color:var(--navy-main);">👑 A 프리미엄 패키지 (24개월)</div>
-              <div style="font-size:12px; color:var(--accent); font-weight:800;">총 1,530,000원 (월 63,750원)</div>
-            </div>
-            <span class="arrow">▼</span>
-          </div>
-          <div class="accordion-body">
-            <table class="data-table">
-              <tr><th>구성 항목</th><th>수량</th><th>원가</th><th>할인가</th></tr>
-              <tr class="important"><td><span class="bold">방문형 체험단(A1)</span></td><td>120</td><td>1,200,000원</td><td><span class="bold">480,000원</span></td></tr>
-              <tr><td>[옵션] 방문자 리뷰</td><td>120</td><td>840,000원</td><td><span class="bold" style="color:var(--highlight-blue);">무료 (100%)</span></td></tr>
-              <tr><td>[옵션] 플레이스 저장</td><td>120</td><td>600,000원</td><td><span class="bold" style="color:var(--highlight-blue);">무료 (100%)</span></td></tr>
-              <tr><td>[옵션] 빅데이터 보고서</td><td>120</td><td>240,000원</td><td><span class="bold" style="color:var(--highlight-blue);">무료 (100%)</span></td></tr>
-              <tr><td>네이버 클립(숏폼)</td><td>3</td><td>30,000원</td><td><span class="bold" style="color:var(--highlight-blue);">무료 (100%)</span></td></tr>
-              <tr class="important"><td><span class="bold">블로그 기자단(1천)</span></td><td>30</td><td>1,500,000원</td><td><span class="bold">1,050,000원</span></td></tr>
-              <tr><td>[옵션] 원고 대필 / 포토</td><td>35</td><td>650,000원</td><td><span class="bold" style="color:var(--highlight-blue);">무료 (100%)</span></td></tr>
-              <tr><td>플레이스 최적화 점검</td><td>1</td><td>100,000원</td><td><span class="bold" style="color:var(--highlight-blue);">무료 (100%)</span></td></tr>
-            </table>
-            <div style="background:#FFF3ED; padding:8px; border-radius:6px; font-size:12px; color:var(--accent); margin-top:8px;">
-              <b>핵심셀링:</b> 가장 많은 광고주가 고르는 풀패키지! 월 6만 원대로 플레이스 노출 최적화.
-            </div>
-          </div>
+        <span class="tag">버전 1</span>
+        <h3>친근 & 발랄 (기본형)</h3>
+        <div class="script-box">
+"안녕하세요. 사장님~ 저는 파블로체험단 에서 체험단을 진행하고 있는 담당자 김희진입니다. 사장님 네이버 플레이스를 둘러보다가 잘 정리된 부분도 있지만, 몇 가지만 살짝 보완하면 손님이 훨씬 늘어날 것 같아서 연락드렸어요! 3분 정도만 잠깐 시간 괜찮으실까요?"
+
+[현황 진단]
+"사장님 대표 사진이랑 메뉴판을 보니 구성은 좋은데 음식 실물 사진이 조금 아쉬워요. 요새 손님들은 배고플 때 직관적인 음식 사진을 보고 매장을 고르거든요. 게다가 근처 경쟁 매장은 리뷰가 수천 개 쌓여있는데, 사장님 매장은 아직 리뷰 수가 적어서 플레이스 노출 순위에서 손해를 보고 계신 상황이에요."
+
+[단품 안내 및 패키지 유도]
+"그래서 보통 처음 시작하실 때 부담 없는 단품 상품으로 블로그 리뷰 10~20건 정도만 먼저 올려서 분위기를 바꾸시는 분들이 많아요.
+그런데 사장님, 막상 단품으로 해보신 분들이나 효과를 빠르게 보시는 사장님들은 결국 프리미엄 패키지를 선택하시더라고요. 단품은 일회성으로 끝나지만, 프리미엄 패키지는 방문형 체험단 120건에 기자단 30건까지 24개월 동안 꾸준히 챙겨드려서 월 6만 원대로 훨씬 가성비가 높거든요. 실제로 사업자 사장님의 87.3%가 이 구성으로 진행하고 계세요."
+
+[클로징]
+"사장님 매장 상황에는 단품보다 이 프리미엄 패키지로 꾸준히 관리받으시는 게 비용 대비 효과가 훨씬 크실 것 같은데, 카톡으로 견적표 한번 먼저 받아보시겠어요?"
         </div>
 
-        <!-- B 베이직 -->
-        <div class="accordion-item open">
-          <div class="accordion-header" onclick="toggleAccordion(this)">
-            <div>
-              <span class="badge" style="background:#6B7280;">8.1% 선택</span>
-              <div class="bold" style="font-size:15px; color:var(--navy-main);">💎 B 베이직 패키지 (12개월)</div>
-              <div style="font-size:12px; color:var(--navy-main); font-weight:800;">총 1,065,000원 (월 88,750원)</div>
-            </div>
-            <span class="arrow">▼</span>
-          </div>
-          <div class="accordion-body">
-            <table class="data-table">
-              <tr><th>구성 항목</th><th>수량</th><th>원가</th><th>할인가</th></tr>
-              <tr class="important"><td><span class="bold">방문형 체험단(A1)</span></td><td>60</td><td>600,000원</td><td><span class="bold">360,000원</span></td></tr>
-              <tr><td>[옵션] 방문자 리뷰</td><td>60</td><td>420,000원</td><td><span class="bold" style="color:var(--highlight-blue);">무료 (100%)</span></td></tr>
-              <tr><td>[옵션] 플레이스 저장</td><td>60</td><td>300,000원</td><td><span class="bold" style="color:var(--highlight-blue);">무료 (100%)</span></td></tr>
-              <tr class="important"><td><span class="bold">블로그 기자단(1천)</span></td><td>10</td><td>500,000원</td><td><span class="bold">450,000원</span></td></tr>
-              <tr><td>[옵션] 원고 대필 / 포토</td><td>10</td><td>200,000원</td><td><span class="bold" style="color:var(--highlight-blue);">무료 (100%)</span></td></tr>
-              <tr><td>플레이스 최적화 점검</td><td>1</td><td>100,000원</td><td><span class="bold" style="color:var(--highlight-blue);">무료 (100%)</span></td></tr>
-            </table>
-            <div style="background:#F3F4F6; padding:8px; border-radius:6px; font-size:12px; color:var(--navy-main); margin-top:8px;">
-              <b>핵심셀링:</b> 1년 단위 계약을 원하는 매장에 적합한 기본 실속형 패키지.
-            </div>
-          </div>
+        <span class="tag">버전 2</span>
+        <h3>차분 & 신뢰 (전문가형)</h3>
+        <div class="script-box">
+"안녕하세요, 사장님. 저는 파블로체험단에서 체험단을 진행하고 있는 담당자 김희진입니다. 귀 매장의 네이버 플레이스 데이터를 점검하던 중, 노출 순위와 클릭률을 높일 수 있는 개선 포인트가 확인되어 잠시 말씀드리고자 연락드렸습니다."
+
+[현황 진단 및 설명]
+"현재 매장 플레이스의 경우 대표 사진과 메뉴판 이미지 강화, 그리고 리뷰 수 확보가 필요한 상황입니다. 단기간 리뷰를 채우는 단품 상품도 있지만, 플레이스 알고리즘 특성상 지속적인 트래픽과 리뷰 생성이 필수적입니다.
+그래서 대부분의 사장님들께서도 단품으로 문의를 주셨다가 결국 프리미엄 패키지로 진행을 확정하십니다. 방문형 체험단 120건과 기자단 30건이 24개월간 장기적으로 공급되어, 월 6만 3,750원 수준으로 가장 효율적인 마케팅 구조를 만드실 수 있기 때문입니다. 사장님 매장에 맞춘 상세 분석 자료와 견적서를 카카오톡으로 먼저 안내해 드려도 되겠습니까?"
         </div>
 
-        <!-- C 라이트 -->
-        <div class="accordion-item open">
-          <div class="accordion-header" onclick="toggleAccordion(this)">
-            <div>
-              <span class="badge" style="background:#6B7280;">4.6% 선택</span>
-              <div class="bold" style="font-size:15px; color:var(--navy-main);">🌱 C 라이트 패키지 (6개월)</div>
-              <div style="font-size:12px; color:var(--navy-main); font-weight:800;">총 634,000원 (월 105,667원)</div>
-            </div>
-            <span class="arrow">▼</span>
-          </div>
-          <div class="accordion-body">
-            <table class="data-table">
-              <tr><th>구성 항목</th><th>수량</th><th>원가</th><th>할인가</th></tr>
-              <tr class="important"><td><span class="bold">방문형 체험단(A1)</span></td><td>30</td><td>300,000원</td><td><span class="bold">240,000원</span></td></tr>
-              <tr><td>[옵션] 방문자 리뷰</td><td>30</td><td>210,000원</td><td><span class="bold" style="color:var(--highlight-blue);">무료 (100%)</span></td></tr>
-              <tr class="important"><td><span class="bold">블로그 기자단(1천)</span></td><td>5</td><td>250,000원</td><td><span class="bold">225,000원</span></td></tr>
-              <tr><td>[옵션] 원고 대필 / 포토</td><td>5</td><td>100,000원</td><td><span class="bold" style="color:var(--highlight-blue);">무료 (100%)</span></td></tr>
-              <tr><td>플레이스 최적화 점검</td><td>1</td><td>100,000원</td><td><span class="bold" style="color:var(--highlight-blue);">무료 (100%)</span></td></tr>
-            </table>
-            <div style="background:#F3F4F6; padding:8px; border-radius:6px; font-size:12px; color:var(--navy-main); margin-top:8px;">
-              <b>핵심셀링:</b> 신규 오픈 단기 테스트용 6개월 스타터 패키지.
-            </div>
-          </div>
+        <span class="tag">버전 3</span>
+        <h3>공감 & 다정 (배려형)</h3>
+        <div class="script-box">
+"안녕하세요 사장님~ 저는 파블로체험단에서 체험단을 진행하고 있는 담당자 김희진입니다. 요새 장사하시느라 많이 바쁘시죠? 사장님 가게 플레이스를 보다가 정말 조금만 손보면 손님이 훨씬 많이 찾으실 것 같아서 안타까운 마음에 연락드렸어요."
+
+[설명 및 유도]
+"처음에는 다들 부담스러우니까 리뷰 몇 개만 먼저 받아보는 단품 체험단으로 시작해볼까 생각하세요. 그런데 실제로 진행해 보신 분들은 이왕 할 거 제대로 해야 효과가 지속된다면서 프리미엄 패키지로 많이 바꾸세요. 24개월 동안 체험단 120건에 기자단 30건까지 든든하게 채워주는 프리미엄 구성이 한 달 6만 원대로 부담도 적고 반응도 확실하거든요. 카톡으로 정리된 내용 보내드릴 테니 편하게 한번 살펴보시겠어요?"
         </div>
 
-      </div>
+        <span class="tag">버전 4</span>
+        <h3>센스 & 트렌디 (간결형)</h3>
+        <div class="script-box">
+"사장님 안녕하세요! 저는 파블로체험단에서 체험단 맡고 있는 김희진 담당자입니다. 사장님 매장 플레이스 핵심만 딱 1분만 짚어드리려고 전화드렸어요!"
 
-      <!-- 3. 영업멘트 탭 -->
-      <div id="tab-script" class="tab-content">
-        <div class="accordion-item">
-          <div class="accordion-header" onclick="toggleAccordion(this)">
-            <span class="bold">📢 [친근] 발랄 상큼 톤 (오프닝)</span>
-            <span class="arrow">▼</span>
-          </div>
-          <div class="accordion-body">
-            안녕하세요 사장님~ 플로우마케팅 담당자예요! 플레이스 보니까 잘 된 곳도 있고 살짝 아쉬운 부분도 있어서요. 딱 10분만 시간 내주실 수 있을까요?
-          </div>
-        </div>
-        <div class="accordion-item">
-          <div class="accordion-header" onclick="toggleAccordion(this)">
-            <span class="bold">👔 [신뢰] 차분한 전문가 톤</span>
-            <span class="arrow">▼</span>
-          </div>
-          <div class="accordion-body">
-            안녕하세요 사장님, 플로우마케팅입니다. 매장 플레이스 검토 결과 보완이 필요한 항목이 있어 연락드렸습니다.
-          </div>
-        </div>
-      </div>
-
-      <!-- 4. 대응상황 탭 -->
-      <div id="tab-objection" class="tab-content">
-        
-        <!-- 3번 기능: ChatGPT 빠른 AI 질문 바로가기 버튼 -->
-        <div class="ai-btn-card">
-          <div style="font-size:12.5px; font-weight:700; color:#1E40AF; margin-bottom:6px;">⚡ 작성된 멘트에 없는 질문을 받았을 때</div>
-          <a href="https://chatgpt.com/?q=%EB%A7%88%EC%BC%80%ED%8C%85%20%EC%96%B1%EC%97%85%20%EC%A5%B0%20%EA%B4%91%EA%B3%A0%EC%A3%BC%EA%B0%80%20%EB%8B%A4%EC%9D%8C%EA%B3%BC%20%EA%B0%99%EC%9D%B4%20%EA%B1%B0%EC%A0%88%ED%96%88%EC%96%B4%EC%9A%94.%20%EC%82%AC%EC%95%85%ED%95%98%EC%A7%80%20%EC%95%8A%EA%B3%A0%20%EB%8B%A4%EC%A0%95%ED%95%98%EA%B2%8C%20%EB%A7%88%EC%9D%8C%EC%9D%84%20%EB%8F%8C%EB%A6%B0%20%EC%84%A4%EB%93%9D%20%EB%A9%98%ED%8A%B8%203%EA%B0%9C%20%EC%BRecommendation%ED%95%B4%EC%A3%BC%EC%84%B8%EC%9A%94%3A%20" target="_blank" class="ai-btn">
-            🤖 ChatGPT에 실시간 돌발 질문하기 (무료)
-          </a>
+[설명 및 유도]
+"가볍게 시작하시려는 분들은 일회성 단품 상품으로 한두 번 올려보시는 걸 먼저 물어보시는데요. 사실 단품은 그때뿐이라 결국 프리미엄 패키지로 넘어가시는 분들이 10명 중 8명 이상이에요. 방문 체험단 120건에 기자단 30건을 묶어서 24개월 동안 지속해서 넣어드리는데, 월 6만 원대라 단품 대비 단가가 훨씬 저렴하거든요. 카톡으로 비교표 하나 보내드리는 게 깔끔할 것 같은데, 이 번호로 카톡 전달드려도 될까요?"
         </div>
 
-        <div class="accordion-item">
-          <div class="accordion-header" onclick="toggleAccordion(this)">
-            <span class="bold" style="color:var(--accent);">🛑 "바빠요 / 시간 없어요"</span>
-            <span class="arrow">▼</span>
-          </div>
-          <div class="accordion-body">
-            <b>대응 멘트:</b> "괜찮아요 사장님, 그럼 딱 30초만 드릴게요! 사장님 플레이스에서 손해보고 계신 부분 하나만 짚어드려도 될까요?"
-          </div>
-        </div>
-        <div class="accordion-item">
-          <div class="accordion-header" onclick="toggleAccordion(this)">
-            <span class="bold" style="color:var(--accent);">🛑 "가격부터 먼저 말해주세요"</span>
-            <span class="arrow">▼</span>
-          </div>
-          <div class="accordion-body">
-            <b>대응 멘트:</b> "가장 많이 하시는 프리미엄 기준 24개월 153만 원(월 6만 원대)입니다. 매장 상황에 맞춰 세부 조정 가능합니다!"
-          </div>
-        </div>
-        <div class="accordion-item">
-          <div class="accordion-header" onclick="toggleAccordion(this)">
-            <span class="bold" style="color:var(--accent);">🤖 "AI(ChatGPT 등) 검색 추천도 되나요?"</span>
-            <span class="arrow">▼</span>
-          </div>
-          <div class="accordion-body">
-            <b>대응 멘트:</b> "네 사장님! 네이버 블로그뿐만 아니라, 요즘 소비자들이 많이 쓰는 AI 검색(GEO)에도 사장님 매장이 추천되도록 데이터 최적화 작업을 함께 진행해 드립니다."
-          </div>
-        </div>
-      </div>
+        <span class="tag">버전 5</span>
+        <h3>진심 & 진솔 (설득형)</h3>
+        <div class="script-box">
+"안녕하세요 사장님, 저는 파블로체험단에서 체험단을 진행하고 있는 담당자 김희진입니다. 바쁘신 시간에 갑자기 전화드려 죄송하지만, 사장님 매장 마케팅에 진짜 도움이 될 만한 포인트가 보여서 진심을 담아 연락드렸습니다."
 
-      <!-- 5. 용어사전 탭 -->
-      <div id="tab-glossary" class="tab-content">
-        <div class="card">
-          <div class="card-title">필수 마케팅 용어</div>
-          <div style="font-size:13px; line-height: 1.8;">
-            <b>SEO:</b> 검색엔진 최적화 (네이버 상위노출)<br>
-            <b>GEO:</b> AI 검색 최적화 (ChatGPT, Gemini 노출)<br>
-            <b>CTR / CVR:</b> 클릭률 / 구매 전환율<br>
-            <b>ROAS:</b> 광고비 대비 매출 성과 지표
-          </div>
+[설명 및 유도]
+"보통 비용 부담 때문에 적은 수량의 단품 체험단을 먼저 고려하시는 심정도 잘 알고 있습니다. 하지만 마케팅은 끊기지 않고 꾸준히 쌓이는 게 핵심이다 보니, 경험 있으신 사장님들은 결국 프리미엄 패키지를 고르세요. 24개월 동안 체험단 120건과 기자단 30건을 체계적으로 배분해 드리기 때문에 월 6만 3,750원이라는 저렴한 월 비용으로 매장 인지도와 순위를 안정적으로 유지할 수 있습니다. 제가 진심으로 추천해 드리는 구성이니, 카톡으로 보내드리는 견적서만 부담 없이 확인 한번 해보세요."
         </div>
-      </div>
+    </div>
+
+    <!-- 🛡️ 2. 상황별 거절/질문 대응 스크립트 (통합 14종) -->
+    <div class="card">
+        <h2>2. 상황별 거절 & 질문 대응 스크립트 (14가지)</h2>
+
+        <div class="qa-item">
+            <div class="qa-title">S01. "시간 없어요" / "바빠요"</div>
+            <div class="qa-ans">"아, 바쁘신 시간 죄송합니다 사장님! 그럼 딱 30초만 말씀드릴게요. 사장님 플레이스를 보니 지금 손해 보고 계신 보완점이 딱 하나 보여서요! 이 부분만 말씀드리고 끊겠습니다. 괜찮으실까요?"
+(그래도 바쁘다고 할 때) "네 사장님! 그럼 제일 한가하신 시간대가 언제쯤이실까요? 그때 제가 다시 짧게 연락드리겠습니다."</div>
+        </div>
+
+        <div class="qa-item">
+            <div class="qa-title">S02. "관심 없어요" / 말 끊고 바로 거절</div>
+            <div class="qa-ans">"네, 사장님 부담 가지실 필요 전혀 없습니다! 제가 무작정 상품을 파려는 게 아니라, 파블로체험단 김희진 담당자로서 사장님 플레이스 상태만 무료로 진단해 드리려는 거예요. 1분만 들어보시고 도움 안 된다 싶으시면 바로 끊으셔도 괜찮습니다."</div>
+        </div>
+
+        <div class="qa-item">
+            <div class="qa-title">S03. "왜 전화하셨어요?" / "어떻게 알고 전화했어요?"</div>
+            <div class="qa-ans">"네 사장님, 저는 파블로체험단 김희진 담당자입니다. 네이버 지도(플레이스)에 공개되어 있는 매장 정보를 보고 연락드렸습니다. 사장님 매장 플레이스를 둘러보던 중 리뷰나 사진 구성에서 노출 손해를 보고 계신 부분이 있어, 안내해 드리고자 연락드렸습니다."</div>
+        </div>
+
+        <div class="qa-item">
+            <div class="qa-title">S04. "이런 전화 많이 받아서 안 믿어요" / "스팸 전화 아닌가요?"</div>
+            <div class="qa-ans">"사장님, 워낙 광고 전화가 많다 보니 피곤하셨을 마음 충분히 이해합니다. 저희는 정식 사업자등록이 되어 있는 파블로체험단이고요. 제 이름 김희진과 직통 연락처, 회사 정보가 명시된 공식 견적서를 카톡으로 먼저 보내드릴 테니 확인해 보시고 신뢰가 가실 때 말씀해 주세요."</div>
+        </div>
+
+        <div class="qa-item">
+            <div class="qa-title">S05. "가격부터 말해주세요"</div>
+            <div class="qa-ans">"네, 바로 말씀드리겠습니다! 단품으로 진행하시면 건당 단가가 올라가지만, 사장님들이 가장 많이 찾으시는 프리미엄 패키지 기준으로는 24개월 동안 방문 체험단 120건+기자단 30건 포함해서 최종 153만원, 월로 나누면 월 6만 3,750원 수준입니다. 물론 매장 상황에 맞춘 맞춤 단품 구성도 가능합니다."</div>
+        </div>
+
+        <div class="qa-item">
+            <div class="qa-title">S06. "계약 기간이 너무 길어요" (24개월 부담)</div>
+            <div class="qa-ans">"플레이스 순위와 인지도를 안정적으로 유지하기 위해 24개월 프리미엄 패키지를 가장 많이 추천해 드리지만, 기간이 부담스러우시다면 12개월 베이직이나 6개월 라이트 단품 패키지로 기간을 조정해서 시작하실 수도 있습니다. 어떤 기간이 더 편하시겠어요?"</div>
+        </div>
+
+        <div class="qa-item">
+            <div class="qa-title">S07. "요즘 장사가 안돼서 예산 여유가 없어요"</div>
+            <div class="qa-ans">"사장님, 요즘 경기가 어려워서 고민이 정말 많으시죠. 하지만 손님이 줄어드는 이유 중 하나가 온라인 플레이스 노출이 밀려있기 때문일 수 있습니다. 큰 금액이 부담스러우시다면, 가장 가벼운 라이트 단품 구성부터 부담 없이 시작하셔서 손님 유입을 먼저 늘려보시는 방법도 추천해 드립니다."</div>
+        </div>
+
+        <div class="qa-item">
+            <div class="qa-title">S08. "카톡으로 자료(견적서)만 먼저 주세요"</div>
+            <div class="qa-ans">"네 사장님! 카카오톡으로 견적 자료 정리해서 바로 보내드리겠습니다. 다만 매장 업종과 현재 플레이스 상태에 따라 맞춰서 추천해 드리는 패키지나 단품 구성이 달라서요. 간단히 한두 가지만 여쭤보고 매장에 딱 맞는 자료로 보내드려도 될까요?"</div>
+        </div>
+
+        <div class="qa-item">
+            <div class="qa-title">S09. "이미 다른 업체 쓰고 있어요"</div>
+            <div class="qa-ans">"아, 이미 마케팅을 적극적으로 진행하고 계시군요! 훌륭하십니다. 혹시 지금 업체에서는 블로그 리뷰 위주로만 하시나요? 저희 파블로체험단은 방문형 체험단과 블로그 기자단, 그리고 고화질 매장 사진 확보까지 패키지로 함께 지원해 드려서 기존 업체의 부족한 구멍을 채워드리는 형태로도 많이 활용하십니다."</div>
+        </div>
+
+        <div class="qa-item">
+            <div class="qa-title">S10. "예전에 체험단 해봤는데 효과 없었어요"</div>
+            <div class="qa-ans">"그러셨군요 사장님. 이전 진행 때 어떤 부분이 가장 아쉬우셨을까요? 단순히 리뷰 수만 채우거나 품질 낮은 블로거가 다녀가면 효과를 보기 어렵습니다. 저희 파블로체험단은 키워드 노출도가 높은 우수 블로거 배치와 함께 플레이스 최적화 작업을 동시에 진행하기 때문에 기존 단품 체험단과는 결과가 다릅니다."</div>
+        </div>
+
+        <div class="qa-item">
+            <div class="qa-title">S11. "생각해보고 제가 연락드릴게요" / "다른 곳 알아보고 결정할게요"</div>
+            <div class="qa-ans">"네 사장님, 충분히 비교해 보시고 결정하시는 게 맞습니다! 나중에 다른 곳과 비교해 보실 때 ① 체험단 인원수, ② 리뷰어 블로그지수(노출 품질), ③ 매장 대표 사진 제공 여부 이 3가지는 꼭 체크해 보세요. 검토해 보실 수 있게 카톡으로 견적서 남겨드릴 테니, 제가 이번 주 목요일 오후쯤 다시 한번 안내차 연락드려도 괜찮을까요?"</div>
+        </div>
+
+        <div class="qa-item">
+            <div class="qa-title">S12. "이거 리뷰 조작이나 어뷰징 아닌가요?"</div>
+            <div class="qa-ans">"아닙니다 사장님! 저희 파블로체험단은 실제 블로거와 작성자가 매장을 직접 방문하거나 제휴를 통해 정직하게 이용 후기를 남기는 방식입니다. 네이버 정책을 준수하는 합법적이고 안전한 마케팅 방식이니 안심하셔도 됩니다."</div>
+        </div>
+
+        <div class="qa-item">
+            <div class="qa-title">S13. "사장님 안 계세요" / "제가 결정권자가 아니에요" / "본사 지침"</div>
+            <div class="qa-ans">"아, 그러시군요! 실례지만 사장님이나 마케팅 담당자님이 매장에 계시거나 통화 가능하신 시간대가 보통 몇 시쯤이실까요? 그 시간에 맞춰 제가 다시 연락드리거나, 미리 검토하실 수 있도록 카톡으로 안내 자료를 남겨드리겠습니다."</div>
+        </div>
+
+        <div class="qa-item">
+            <div class="qa-title">S14. "이거 네이버 공식 업체에서 하는 건가요?"</div>
+            <div class="qa-ans">"아니요 사장님, 저희는 네이버 본사는 아닙니다. 네이버 지도/플레이스의 노출과 마케팅을 전문적으로 대행해 드리는 파블로체험단(플로우마케팅) 전문 대행사입니다."</div>
+        </div>
 
     </div>
 
-    <!-- 우측 상담 메모장 고정 패널 -->
-    <div class="right-pane">
-      <div class="memo-panel">
-        <h3>📝 광고주 상담 실시간 메모장</h3>
-        <p>견적/멘트를 보며 상담 내용을 기록하세요 (자동 저장)</p>
-        <textarea id="memoText" class="memo-area" placeholder="예) 강남 00식당 / 사장님 성함 / 120명 패키지 관심 / 내일 오후 2시 재통화..."></textarea>
-      </div>
-    </div>
-
-  </div>
 </div>
 
 <script>
-  const SECRET_PW = '0601';
+function generateScript() {
+    const storeName = document.getElementById('storeName').value.trim() || '사장님 매장';
+    const industry = document.getElementById('industry').value;
+    const outputBox = document.getElementById('scriptOutput');
+    const copyBtn = document.getElementById('copyBtn');
 
-  function checkPw() {
-    const input = document.getElementById('pwInput').value;
-    if (input === SECRET_PW) {
-      document.getElementById('authOverlay').style.display = 'none';
-      document.getElementById('mainContent').classList.add('unlocked');
-      sessionStorage.setItem('pablo_auth', 'true');
+    let scriptText = "";
+
+    if (industry === 'food') {
+        scriptText = `[음식점 / 맛집 맞춤 스크립트]\n\n` +
+            `"안녕하세요 사장님~ 저는 파블로체험단에서 체험단을 진행하고 있는 담당자 김희진입니다.\n` +
+            `이번에 ${storeName} 플레이스를 둘러보다가 음식 사진이랑 메뉴 구성이 너무 좋은데, 몇 가지만 보완하면 손님이 훨씬 많이 오실 것 같아서 연락드렸어요.\n\n` +
+            `지금 대표 사진이나 손님 후기(리뷰) 수가 주변 경쟁 맛집들에 비해 조금 적은 편이에요. 요즘 손님들은 맛집 검색할 때 플레이스 리뷰 개수와 음식 사진 보고 바로 결정하거든요.\n\n` +
+            `보통 처음엔 부담 없는 단품 체험단으로 리뷰 10개 정도 올리는 걸 문의하시는데요. 맛집 검색은 꾸준한 신규 리뷰 유입이 생명이라, 결국 10명 중 8명 이상은 프리미엄 패키지를 선택하세요.\n` +
+            `24개월 동안 방문 체험단 120건에 기자단 30건까지 꾸준히 채워드려서 월 6만 원대로 매장 노출을 지속할 수 있거든요.\n\n` +
+            `${storeName} 분위기에 맞는 체험단 진행 예시 자료를 카톡으로 먼저 보내드릴 테니 편하게 확인해 보시겠어요?"`;
+    } else if (industry === 'nail') {
+        scriptText = `[네일샵 / 뷰티 맞춤 스크립트]\n\n` +
+            `"안녕하세요 원장님~ 저는 파블로체험단에서 체험단을 진행하고 있는 담당자 김희진입니다.\n` +
+            `원장님 ${storeName} 플레이스에서 시술 사진을 봤는데 디자인이 너무 예쁘더라구요! 플레이스 관리 조금만 더 하시면 예약 문의가 훨씬 늘어날 것 같아 잠시 연락드렸습니다.\n\n` +
+            `뷰티업종은 손님들이 인스타그램이나 블로그에서 원장님의 시술 포트폴리오와 상세 후기를 정독하고 예약하잖아요. 그런데 지금 플레이스에는 원장님의 뛰어난 실력에 비해 블로그 후기나 시술 사진 자료가 조금 아쉬운 상황이에요.\n\n` +
+            `가볍게 단품으로 몇 건만 체험단을 진행해 보실 수도 있지만, 뷰티샵은 트렌드에 맞춰 매달 신상 아트나 시술 후기가 끊기지 않고 올라오는 게 훨씬 유리해요.\n` +
+            `그래서 원장님들도 단품으로 하셨다가 결국 24개월 동안 꾸준히 뷰티 전문 블로거를 보내드리는 프리미엄 패키지(월 6만 원대)로 많이 전환하십니다.\n\n` +
+            `동종 뷰티 샵에서 효과 보셨던 체험단 포트폴리오와 안내서를 카톡으로 보내드릴 테니, 시술 사이에 편하게 한번 살펴보시겠어요?"`;
+    } else if (industry === 'semi') {
+        scriptText = `[반영구 / 특수뷰티 맞춤 스크립트]\n\n` +
+            `"안녕하세요 원장님! 저는 파블로체험단에서 체험단을 진행하고 있는 담당자 김희진입니다.\n` +
+            `원장님 ${storeName} 반영구 시술 비포애프터 결과물이 너무 자연스럽고 좋은데, 검색 노출이 조금 아쉬워서 도움을 드리고자 연락드렸어요.\n\n` +
+            `반영구 시술은 손님들이 가격보다 '자연스러운지', '짱구 눈썹이 안 되는지' 후기를 정말 꼼꼼하게 찾아보고 방문하거든요. 지금 플레이스 상에는 실제 방문 고객들의 상세한 안심 후기와 비포애프터 블로그 글이 더 보강될 필요가 있습니다.\n\n` +
+            `단발성 단품 체험단으로 몇 개만 올리실 수도 있지만, 반영구는 계절이나 계기에 맞춰 꾸준히 후기가 쌓여야 신뢰도가 유지됩니다. 그래서 대부분의 원장님들이 24개월간 기자단과 체험단을 묶어서 월 6만 원대로 꾸준히 키워드를 잡아주는 프리미엄 패키지를 고르세요.\n\n` +
+            `${storeName} 반영구 키워드 노출 세팅 관련 자료를 카톡으로 보내드릴 테니 시간 되실 때 확인해 보시겠어요?"`;
     } else {
-      document.getElementById('authError').style.display = 'block';
+        scriptText = `[일반 / 기타 맞춤 스크립트]\n\n` +
+            `"안녕하세요 사장님~ 저는 파블로체험단에서 체험단을 진행하고 있는 담당자 김희진입니다.\n` +
+            `${storeName} 플레이스를 둘러보다가 잘 정리된 부분도 있지만, 몇 가지만 살짝 보완하면 손님이 훨씬 늘어날 것 같아서 연락드렸어요!\n\n` +
+            `사장님 대표 사진이랑 메뉴/상품 사진을 보니 구성은 좋은데, 근처 경쟁 매장은 리뷰가 수천 개 쌓여있는 반면 ${storeName}은 아직 리뷰 수가 적어서 플레이스 노출 순위에서 손해를 보고 계신 상황이에요.\n\n` +
+            `그래서 보통 처음 시작하실 때 부담 없는 단품 상품으로 블로그 리뷰 10~20건 정도만 먼저 올려서 분위기를 바꾸시는 분들이 많아요.\n` +
+            `그런데 막상 단품으로 해보신 분들이나 효과를 빠르게 보시는 사장님들은 결국 프리미엄 패키지를 선택하시더라고요.\n` +
+            `단품은 일회성으로 끝나지만, 프리미엄 패키지는 방문형 체험단 120건에 기자단 30건까지 24개월 동안 꾸준히 챙겨드려서 월 6만 원대로 훨씬 가성비가 높거든요.\n\n` +
+            `${storeName} 상황에는 이 프리미엄 패키지로 꾸준히 관리받으시는 게 비용 대비 효과가 훨씬 크실 것 같은데, 카톡으로 견적표 한번 먼저 받아보시겠어요?"`;
     }
-  }
 
-  if (sessionStorage.getItem('pablo_auth') === 'true') {
-    document.getElementById('authOverlay').style.display = 'none';
-    document.getElementById('mainContent').classList.add('unlocked');
-  }
+    outputBox.innerText = scriptText;
+    outputBox.style.display = 'block';
+    copyBtn.style.display = 'inline-block';
+}
 
-  function switchTab(tabId) {
-    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-    document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-    event.target.classList.add('active');
-    document.getElementById(tabId).classList.add('active');
-  }
-
-  function toggleAccordion(headerElem) {
-    const item = headerElem.parentElement;
-    item.classList.toggle('open');
-  }
-
-  const memoTextarea = document.getElementById('memoText');
-  memoTextarea.value = localStorage.getItem('pablo_sales_memo') || '';
-  memoTextarea.addEventListener('input', () => {
-    localStorage.setItem('pablo_sales_memo', memoTextarea.value);
-  });
-
-  // 키워드 실시간 필터링 기능 (2번)
-  function filterItems() {
-    const query = document.getElementById('searchInput').value.toLowerCase();
-    const activeTab = document.querySelector('.tab-content.active');
-    if(!activeTab) return;
-    const targets = activeTab.querySelectorAll('.card, .accordion-item');
-    targets.forEach(el => {
-      el.style.display = el.innerText.toLowerCase().includes(query) ? 'block' : 'none';
+function copyToClipboard() {
+    const text = document.getElementById('scriptOutput').innerText;
+    navigator.clipboard.writeText(text).then(() => {
+        alert('스크립트가 복사되었습니다!');
     });
-  }
+}
 </script>
 
 </body>
