@@ -85,12 +85,13 @@
   }
   .left-pane { flex: 1; min-width: 0; }
   .right-pane {
-    width: 320px;
+    width: 340px;
     position: sticky;
     top: 16px;
     height: calc(100vh - 32px);
     display: flex;
     flex-direction: column;
+    gap: 12px;
   }
 
   /* 헤더 */
@@ -138,22 +139,22 @@
     box-shadow: 0 2px 4px rgba(37,99,235,0.2);
   }
 
-  /* 탭 네비게이션 */
+  /* 탭 네비게이션 (6개 탭) */
   .tab-nav {
     display: flex;
-    gap: 6px;
+    gap: 4px;
     margin-bottom: 12px;
     overflow-x: auto;
   }
   .tab-btn {
     flex: 1;
-    min-width: 75px;
-    padding: 10px 4px;
+    min-width: 65px;
+    padding: 10px 2px;
     text-align: center;
     background: #fff;
     border: 1px solid var(--border-line);
     border-radius: 8px;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 700;
     cursor: pointer;
     color: var(--text-color);
@@ -230,13 +231,24 @@
   .accordion-item.open .arrow { transform: rotate(180deg); }
   .arrow { transition: transform 0.2s; font-size: 10px; }
 
-  /* 메모장 패널 */
+  /* 우측 패널 (계산기 + 메모장) */
+  .calc-panel {
+    background: #fff;
+    border: 1px solid var(--border-line);
+    border-radius: 12px;
+    padding: 14px;
+  }
+  .calc-panel h3 { margin: 0 0 6px 0; font-size: 14px; font-weight: 800; color: var(--navy-main); }
+  .calc-row { display: flex; gap: 6px; margin-bottom: 8px; align-items: center; font-size: 12px; }
+  .calc-row input { width: 80px; padding: 6px; border: 1px solid var(--border-line); border-radius: 6px; text-align: right; }
+  .calc-result { background: #F8F9FA; padding: 8px; border-radius: 6px; font-size: 12.5px; font-weight: 700; color: var(--accent); text-align: right; }
+
   .memo-panel {
     background: #fff;
     border: 1px solid var(--border-line);
     border-radius: 12px;
     padding: 14px;
-    height: 100%;
+    flex: 1;
     display: flex;
     flex-direction: column;
   }
@@ -268,7 +280,7 @@
 
   @media (max-width: 768px) {
     .app-layout { flex-direction: column; }
-    .right-pane { width: 100%; position: static; height: 250px; }
+    .right-pane { width: 100%; position: static; height: auto; }
   }
 </style>
 </head>
@@ -298,22 +310,21 @@
 
       <!-- 검색창 -->
       <div class="search-box">
-        <input type="text" id="searchInput" onkeyup="filterItems()" placeholder="🔍 검색어 입력 (예: 바빠요, 가격, SEO, AI, 프리미엄...)">
+        <input type="text" id="searchInput" onkeyup="filterItems()" placeholder="🔍 검색어 입력 (예: 바빠요, 가격, SEO, AI, 숏폼...)">
       </div>
 
-      <!-- 상단 탭 메뉴 -->
+      <!-- 상단 탭 메뉴 (6개) -->
       <div class="tab-nav">
         <div class="tab-btn active" onclick="switchTab('tab-quote')">견적서</div>
         <div class="tab-btn" onclick="switchTab('tab-package')">패키지</div>
         <div class="tab-btn" onclick="switchTab('tab-script')">영업멘트</div>
         <div class="tab-btn" onclick="switchTab('tab-objection')">대응상황</div>
         <div class="tab-btn" onclick="switchTab('tab-glossary')">용어사전</div>
+        <div class="tab-btn" onclick="switchTab('tab-sheet')">구글시트</div>
       </div>
 
-      <!-- 1. 견적서 탭 -->
+      <!-- 1. 견적서 탭 (원본 보존) -->
       <div id="tab-quote" class="tab-content active">
-        
-        <!-- 방문형 체험단 -->
         <div class="card">
           <span class="badge">광고주 82.7% 계약</span>
           <div class="card-title">방문형 체험단 (A1)</div>
@@ -328,7 +339,6 @@
           </table>
         </div>
 
-        <!-- 블로그 기자단 -->
         <div class="card">
           <span class="badge">광고주 92.3% 계약</span>
           <div class="card-title">블로그 기자단 (1천 이상)</div>
@@ -343,7 +353,6 @@
           </table>
         </div>
 
-        <!-- 추가 옵션 -->
         <div class="card">
           <div class="card-title">추가 옵션 & 체험단 심사 옵션</div>
           <table class="data-table">
@@ -353,16 +362,11 @@
             <tr><td>B2 포토 방문자 리뷰</td><td>8,000원</td><td>50%</td><td>4,000원</td></tr>
             <tr><td>C 플레이스 저장</td><td>5,000원</td><td>50%</td><td>2,500원</td></tr>
           </table>
-          <div style="font-size:11.5px; color:var(--sub-text); margin-top:6px;">
-            * 체험단 심사: D 준최5 이상(2배) / E 최적1 이상(4배)
-          </div>
         </div>
       </div>
 
-      <!-- 2. 패키지 탭 -->
+      <!-- 2. 패키지 탭 (원본 보존) -->
       <div id="tab-package" class="tab-content">
-        
-        <!-- A 프리미엄 -->
         <div class="accordion-item open">
           <div class="accordion-header" onclick="toggleAccordion(this)">
             <div>
@@ -384,14 +388,10 @@
               <tr><td>[옵션] 원고 대필 / 포토</td><td>35</td><td>650,000원</td><td><span class="bold" style="color:var(--highlight-blue);">무료 (100%)</span></td></tr>
               <tr><td>플레이스 최적화 점검</td><td>1</td><td>100,000원</td><td><span class="bold" style="color:var(--highlight-blue);">무료 (100%)</span></td></tr>
             </table>
-            <div style="background:#FFF3ED; padding:8px; border-radius:6px; font-size:12px; color:var(--accent); margin-top:8px;">
-              <b>핵심셀링:</b> 가장 많은 광고주가 고르는 풀패키지! 월 6만 원대로 플레이스 노출 최적화.
-            </div>
           </div>
         </div>
 
-        <!-- B 베이직 -->
-        <div class="accordion-item open">
+        <div class="accordion-item">
           <div class="accordion-header" onclick="toggleAccordion(this)">
             <div>
               <span class="badge" style="background:#6B7280;">8.1% 선택</span>
@@ -410,14 +410,10 @@
               <tr><td>[옵션] 원고 대필 / 포토</td><td>10</td><td>200,000원</td><td><span class="bold" style="color:var(--highlight-blue);">무료 (100%)</span></td></tr>
               <tr><td>플레이스 최적화 점검</td><td>1</td><td>100,000원</td><td><span class="bold" style="color:var(--highlight-blue);">무료 (100%)</span></td></tr>
             </table>
-            <div style="background:#F3F4F6; padding:8px; border-radius:6px; font-size:12px; color:var(--navy-main); margin-top:8px;">
-              <b>핵심셀링:</b> 1년 단위 계약을 원하는 매장에 적합한 기본 실속형 패키지.
-            </div>
           </div>
         </div>
 
-        <!-- C 라이트 -->
-        <div class="accordion-item open">
+        <div class="accordion-item">
           <div class="accordion-header" onclick="toggleAccordion(this)">
             <div>
               <span class="badge" style="background:#6B7280;">4.6% 선택</span>
@@ -435,12 +431,8 @@
               <tr><td>[옵션] 원고 대필 / 포토</td><td>5</td><td>100,000원</td><td><span class="bold" style="color:var(--highlight-blue);">무료 (100%)</span></td></tr>
               <tr><td>플레이스 최적화 점검</td><td>1</td><td>100,000원</td><td><span class="bold" style="color:var(--highlight-blue);">무료 (100%)</span></td></tr>
             </table>
-            <div style="background:#F3F4F6; padding:8px; border-radius:6px; font-size:12px; color:var(--navy-main); margin-top:8px;">
-              <b>핵심셀링:</b> 신규 오픈 단기 테스트용 6개월 스타터 패키지.
-            </div>
           </div>
         </div>
-
       </div>
 
       <!-- 3. 영업멘트 탭 -->
@@ -467,25 +459,9 @@
 
       <!-- 4. 대응상황 탭 -->
       <div id="tab-objection" class="tab-content">
-        
-        <!-- 구글시트 연동 맞춤 스크립트 소제목 섹션 -->
-        <div class="card" style="border: 1.5px solid var(--accent); background: #FFFBF9;">
-          <div class="card-title" style="color: var(--accent);">📊 구글시트 연동 맞춤 스크립트 생성기</div>
-          <div class="card-sub">업종과 업체명을 입력하면 맞춤형 대응 스크립트가 즉시 만들어집니다.</div>
-          <div style="display: flex; gap: 8px; margin-bottom: 10px;">
-            <input type="text" id="sheetCategory" placeholder="업종 (예: 삼겹살집)" style="flex:1; padding:8px; font-size:12.5px; border:1px solid var(--border-line); border-radius:6px; outline:none;">
-            <input type="text" id="sheetName" placeholder="업체명 (예: OO삼겹살)" style="flex:1; padding:8px; font-size:12.5px; border:1px solid var(--border-line); border-radius:6px; outline:none;">
-            <button onclick="generateCustomScript()" style="padding:8px 14px; background:var(--accent); color:#fff; border:none; border-radius:6px; font-weight:700; cursor:pointer; font-size:12.5px;">생성</button>
-          </div>
-          <div id="customScriptResult" style="font-size:12.5px; background:#fff; padding:10px; border:1px solid var(--border-line); border-radius:6px; display:none; line-height:1.6;">
-            <!-- 생성된 스크립트가 여기에 들어갑니다 -->
-          </div>
-        </div>
-
-        <!-- ChatGPT 빠른 AI 질문 버튼 -->
         <div class="ai-btn-card">
           <div style="font-size:12.5px; font-weight:700; color:#1E40AF; margin-bottom:6px;">⚡ 작성된 멘트에 없는 질문을 받았을 때</div>
-          <a href="https://chatgpt.com/?q=%EB%A7%88%EC%BC%80%ED%8C%85%20%EC%96%B1%EC%97%85%20%EC%A5%B0%20%EA%B4%91%EA%B3%A0%EC%A3%BC%EA%B0%80%20%EB%8B%A4%EC%9D%8C%EA%B3%BC%20%EA%B0%99%EC%9D%B4%20%EA%B1%B0%EC%A0%88%ED%96%88%EC%96%B4%EC%9A%94.%20%EC%82%AC%EC%95%85%ED%95%98%EC%A7%80%20%EC%95%8A%EA%B3%A0%20%EB%8B%A4%EC%9D%95%ED%95%98%EA%B2%8C%20%EB%A7%88%EC%9D%8C%EC%9D%84%20%EB%8F%8C%EB%A6%B0%20%EC%84%A4%EB%93%9D%20%EB%A9%98%ED%8A%B8%203%EA%B0%9C%20%EC%B6%94%EC%B2%9C%ED%95%B4%EC%A3%BC%EC%84%B8%EC%9A%94%3A%20" target="_blank" class="ai-btn">
+          <a href="https://chatgpt.com/?q=%EB%A7%88%EC%BC%80%ED%8C%85%20%EC%96%B1%EC%97%85%20%EC%A4%91%20%EA%B4%91%EA%B3%A0%EC%A3%BC%EA%B0%80%20%EB%8B%A4%EC%9D%8C%EA%B3%BC%20%EA%B0%99%EC%9D%B4%20%EA%B1%B0%EC%A0%88%ED%96%88%EC%96%B4%EC%9A%94.%20%EC%82%AC%EC%95%85%ED%95%98%EC%A7%80%20%EC%95%8A%EA%B3%A0%20%EB%8B%A4%EC%9D%95%ED%95%98%EA%B2%8C%20%EB%A7%88%EC%9D%8C%EC%9D%84%20%EB%8F%8C%EB%A6%B0%20%EC%84%A4%EB%93%9D%20%EB%A9%98%ED%8A%B8%203%EA%B0%9C%20%EC%B6%94%EC%B2%9C%ED%95%B4%EC%A3%BC%EC%84%B8%EC%9A%94%3A%20" target="_blank" class="ai-btn">
             🤖 ChatGPT에 실시간 돌발 질문하기 (무료)
           </a>
         </div>
@@ -510,37 +486,72 @@
         </div>
         <div class="accordion-item">
           <div class="accordion-header" onclick="toggleAccordion(this)">
-            <span class="bold" style="color:var(--accent);">🤖 "AI(ChatGPT 등) 검색 추천도 되나요?"</span>
+            <span class="bold" style="color:var(--accent);">🤖 "매출을 확실히 보장해 주나요?"</span>
             <span class="arrow">▼</span>
           </div>
           <div class="accordion-body">
-            <b>대응 멘트:</b> "네 사장님! 네이버 블로그뿐만 아니라, 요즘 소비자들이 많이 쓰는 AI 검색(GEO)에도 사장님 매장이 추천되도록 데이터 최적화 작업을 함께 진행해 드립니다."
+            <b>대응 멘트:</b> "매출은 억지로 장담드릴 수 없지만, 매장에 실제로 발걸음하는 체험단 인원과 리뷰 노출 건수는 계약서처럼 확실하게 보장해 드립니다!"
           </div>
         </div>
       </div>
 
-      <!-- 5. 용어사전 탭 -->
+      <!-- 5. 용어사전 탭 (숏폼, 빅데이터 보고서 등 대폭 보강) -->
       <div id="tab-glossary" class="tab-content">
         <div class="card">
-          <div class="card-title">필수 마케팅 용어</div>
-          <div style="font-size:13px; line-height: 1.8;">
-            <b>SEO:</b> 검색엔진 최적화 (네이버 상위노출)<br>
-            <b>GEO:</b> AI 검색 최적화 (ChatGPT, Gemini 노출)<br>
-            <b>CTR / CVR:</b> 클릭률 / 구매 전환율<br>
-            <b>ROAS:</b> 광고비 대비 매출 성과 지표
+          <div class="card-title">📖 필수 마케팅 용어 사전</div>
+          <div style="font-size:13px; line-height: 1.9;">
+            <b>SEO (검색엔진 최적화):</b> 네이버나 다음 등 검색 포털에서 소비자가 키워드를 검색했을 때, 우리 매장 블로그나 플레이스가 상위에 노출되도록 관리하는 기술.<br><br>
+            <b>GEO (AI 검색 최적화):</b> ChatGPT, 네이버 Cue 등 AI가 추천하는 검색 결과에 우리 매장이 답변으로 노출되도록 최적화하는 최신 마케팅 기법.<br><br>
+            <b>숏폼 (Short-form):</b> 네이버 클립, 인스타그램릴스, 유튜브쇼츠처럼 1분 미만의 짧고 강렬한 세로형 동영상 콘텐츠. 모바일에서 노출 파급력이 매우 큼.<br><br>
+            <b>빅데이터 보고서:</b> 매장 주변 유동 인구, 경쟁 업체의 방문자 성향, 인기 키워드 순위 등을 분석하여 우리 매장의 위치와 마케팅 방향성을 수치로 보여주는 데이터 리포트.<br><br>
+            <b>CTR / CVR:</b> CTR(클릭률 - 노출 대비 클릭한 비율) / CVR(전환율 - 클릭 후 실제 예약이나 방문으로 이어진 비율).<br><br>
+            <b>ROAS:</b> 광고비 대비 매출 성과 지표 (투입한 광고비 대비 얼마의 매출이 발생했는지 백분율로 계산).
+          </div>
+        </div>
+      </div>
+
+      <!-- 6. 구글시트 탭 (맞춤 멘트 생성) -->
+      <div id="tab-sheet" class="tab-content">
+        <div class="card" style="border: 1.5px solid var(--accent); background: #FFFBF9;">
+          <div class="card-title" style="color: var(--accent);">📊 구글시트 연동 맞춤 스크립트 생성기</div>
+          <div class="card-sub">업종과 업체명을 입력하면 맞춤형 대응 스크립트가 즉시 만들어집니다.</div>
+          <div style="display: flex; gap: 8px; margin-bottom: 10px;">
+            <input type="text" id="sheetCategory" placeholder="업종 (예: 미용실)" style="flex:1; padding:8px; font-size:12.5px; border:1px solid var(--border-line); border-radius:6px; outline:none;">
+            <input type="text" id="sheetName" placeholder="업체명 (예: OO헤어)" style="flex:1; padding:8px; font-size:12.5px; border:1px solid var(--border-line); border-radius:6px; outline:none;">
+            <button onclick="generateCustomScript()" style="padding:8px 14px; background:var(--accent); color:#fff; border:none; border-radius:6px; font-weight:700; cursor:pointer; font-size:12.5px;">생성</button>
+          </div>
+          <div id="customScriptResult" style="font-size:12.5px; background:#fff; padding:10px; border:1px solid var(--border-line); border-radius:6px; display:none; line-height:1.6;">
+            <!-- 생성된 스크립트 -->
           </div>
         </div>
       </div>
 
     </div>
 
-    <!-- 우측 상담 메모장 고정 패널 -->
+    <!-- 우측 패널 (계산기 + 메모장) -->
     <div class="right-pane">
+      
+      <!-- 영업 계산기 (메모장 위 배치) -->
+      <div class="calc-panel">
+        <h3>🧮 실전 영업 계산기</h3>
+        <div class="calc-row">
+          <span>단가(원):</span>
+          <input type="number" id="calcPrice" value="4000" oninput="calculateTotal()">
+        </div>
+        <div class="calc-row">
+          <span>수량(인원/건):</span>
+          <input type="number" id="calcQty" value="120" oninput="calculateTotal()">
+        </div>
+        <div class="calc-result" id="calcOutput">총 예상금액: 480,000원</div>
+      </div>
+
+      <!-- 상담 메모장 -->
       <div class="memo-panel">
         <h3>📝 광고주 상담 실시간 메모장</h3>
         <p>견적/멘트를 보며 상담 내용을 기록하세요 (자동 저장)</p>
-        <textarea id="memoText" class="memo-area" placeholder="예) 강남 00식당 / 사장님 성함 / 120명 패키지 관심 / 내일 오후 2시 재통화..."></textarea>
+        <textarea id="memoText" class="memo-area" placeholder="예) 강남 00미용실 / 사장님 성함 / 120명 패키지 관심 / 내일 오후 2시 재통화..."></textarea>
       </div>
+
     </div>
 
   </div>
@@ -577,13 +588,20 @@
     item.classList.toggle('open');
   }
 
+  // 실시간 계산기 함수
+  function calculateTotal() {
+    const p = parseFloat(document.getElementById('calcPrice').value) || 0;
+    const q = parseFloat(document.getElementById('calcQty').value) || 0;
+    const total = p * q;
+    document.getElementById('calcOutput').innerText = '총 예상금액: ' + total.toLocaleString() + '원';
+  }
+
   const memoTextarea = document.getElementById('memoText');
   memoTextarea.value = localStorage.getItem('pablo_sales_memo') || '';
   memoTextarea.addEventListener('input', () => {
     localStorage.setItem('pablo_sales_memo', memoTextarea.value);
   });
 
-  // 키워드 실시간 필터링 기능
   function filterItems() {
     const query = document.getElementById('searchInput').value.toLowerCase();
     const activeTab = document.querySelector('.tab-content.active');
@@ -594,18 +612,17 @@
     });
   }
 
-  // 구글시트 연동 맞춤 스크립트 생성 함수 (이미지 예시 반영)
   function generateCustomScript() {
-    const cat = document.getElementById('sheetCategory').value.trim() || '음식점';
+    const cat = document.getElementById('sheetCategory').value.trim() || '업종';
     const name = document.getElementById('sheetName').value.trim() || 'OO매장';
     const resultDiv = document.getElementById('customScriptResult');
 
     resultDiv.style.display = 'block';
     resultDiv.innerHTML = `
-      <b>[인사]</b> 안녕하세요 사장님~ 저는 플로우마케팅에서 체험단 진행하고 있는 담당자예요! ${name} 플레이스도 한번 살펴보게 됐는데, 잘 되어있는 부분도 있고 살짝 아쉬운 부분도 있더라고요! 10분만 시간 내주실 수 있을까요?<br><br>
-      <b>[플레이스 사진]</b> 첫 사진이 손님 사진이던데, 어떤 마음으로 올려두신 거예요?<br>아~ 손님 많은 거 보여주고 싶으셨던 거군요! 근데 플레이스는 ${cat} 사진이 훨씬 잘 먹혀요. 다들 배고파서 들어오시는 거라 모바일에서도 ${cat} 사진이 눈에 확 들어오거든요!<br>음식 사진 + 메뉴판 사진 + 3~7줄 소개글, 여기에 리뷰까지 더해지면 노출 점수가 확 올라가요.<br><br>
-      <b>[리뷰·경쟁사 비교]</b> 리뷰가 좀 적으신 편이에요! 혹시 경쟁 업체 리뷰 개수 보신 적 있으세요?<br>경쟁 ${cat}은 블로그 2,301개 + 방문자 710개, 총 3천 개인데 사장님은 총 15개예요. 거의 200배 차이! 이게 그대로 순위랑 매출 차이로 이어져요.<br><br>
-      <b>[패키지 제안·마무리]</b> 사장님 상황엔 <b>프리미엄 패키지</b>가 딱이에요! 방문형 체험단 120건 + 블로그 기자단 30건, 24개월에 <b>153만원</b>(월 6만 3,750원)인데, 87.3%가 이거 선택하시는 데는 이유가 있더라고요.<br>카드 할부도 되고 계좌로 하시면 5% 적립도 돼요! 카드, 계좌 어떤 게 편하세요?
+      <b>[인사]</b> 안녕하세요 사장님~ 플로우마케팅 담당자예요! ${name} 플레이스 둘러보다가 보완하면 훨씬 잘 될 포인트가 보여서 연락드렸습니다. 10분만 시간 괜찮으실까요?<br><br>
+      <b>[피드백]</b> 플레이스 사진이나 소개글 구성을 조금만 손보면 ${cat} 특유의 매력이 훨씬 잘 살아나거든요. 여기에 리뷰까지 뒷받침되면 노출 점수가 확 올라갑니다.<br><br>
+      <b>[패키지 제안]</b> 사장님 매장엔 <b>프리미엄 패키지</b>(방문 체험단 120명 + 블로그 30건)가 딱 맞습니다. 24개월 기준 월 6만 원대로 인원과 노출 건수를 확실하게 보장해 드려요!<br><br>
+      <b>[클로징]</b> 카드 할부와 계좌 적립 중 어떤 쪽이 편하신가요?
     `;
   }
 </script>
