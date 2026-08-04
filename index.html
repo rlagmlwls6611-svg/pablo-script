@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>파블로 영업 치트시트 & 세일즈 툴킷</title>
+<style>
+  :root {
+    --bg-paper: #F6F4EE;
+    --navy-main: #1B2A4A;
+    --card-bg: #FFFFFF;
+    --accent: #E0632A;
+    --accent-soft: #FDE9DE;
+    --border-line: #DEDAD0;
+    --text-color: #1B2A4A;
+    --sub-text: #6B7280;
+    --purple: #6b5b95;
+    --purple-soft: #e9e5f2;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 16px 12px 60px;
+    background: var(--bg-paper);
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Malgun Gothic', sans-serif;
+    color: var(--text-color);
+    line-height: 1.6;
+  }
+  .container { max-width: 680px; margin: 0 auto; }
+
+  /* 헤더 영역 */
+  .header {
+    background: var(--navy-main);
+    color: #fff;
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+  .header h1 { margin: 0; font-size: 20px; font-weight: 800; }
+  .header p { margin: 6px 0 0; font-size: 12.5px; color: #C7CEDE; }
+
+  /* 검색창 */
+  .search-box { margin-bottom: 16px; }
+  .search-box input {
+    width: 100%;
+    padding: 12px 16px;
+    font-size: 14px;
+    border: 1.5px solid var(--border-line);
+    border-radius: 12px;
+    outline: none;
+    background: #fff;
+  }
+  .search-box input:focus { border-color: var(--navy-main); }
+
+  /* 탭 메인 메뉴 */
+  .tab-nav {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 16px;
+    overflow-x: auto;
+  }
+  .tab-btn {
+    flex: 1;
+    min-width: 80px;
+    padding: 10px 4px;
+    text-align: center;
+    background: #fff;
+    border: 1px solid var(--border-line);
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    color: var(--text-color);
+    white-space: nowrap;
+  }
+  .tab-btn.active {
+    background: var(--navy-main);
+    color: #fff;
+    border-color: var(--navy-main);
+  }
+
+  /* 탭 콘텐츠 영역 */
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* 카드 UI */
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-line);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 12px;
+  }
+  .card-title { font-size: 15px; font-weight: 800; margin-bottom: 8px; color: var(--navy-main); }
+  .card-desc { font-size: 13px; color: var(--sub-text); margin-bottom: 10px; }
+
+  /* 견적 테이블 */
+  .mini-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .mini-table th, .mini-table td { padding: 8px 4px; text-align: right; border-bottom: 1px solid var(--border-line); }
+  .mini-table th:first-child, .mini-table td:first-child { text-align: left; }
+  .mini-table tr.highlight td { font-weight: 800; background: var(--accent-soft); color: var(--accent); }
+
+  /* 버튼 및 리스트 */
+  .item-btn {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 12px 14px;
+    background: #fff;
+    border: 1px solid var(--border-line);
+    border-radius: 10px;
+    margin-bottom: 8px;
+    cursor: pointer;
+  }
+  .item-btn .tag { font-size: 10.5px; font-weight: 700; color: var(--accent); }
+  .item-btn .q { font-size: 13.5px; font-weight: 700; margin-top: 2px; }
+
+  /* 메모장 스타일 */
+  .memo-area {
+    width: 100%;
+    height: 180px;
+    padding: 12px;
+    border: 1.5px solid var(--border-line);
+    border-radius: 12px;
+    font-size: 13.5px;
+    resize: vertical;
+    outline: none;
+    font-family: inherit;
+  }
+
+  /* 상세팝업 (모달) */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 999;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+  }
+  .modal-overlay.active { display: flex; }
+  .modal {
+    background: #fff;
+    width: 100%;
+    max-width: 500px;
+    max-height: 80vh;
+    border-radius: 16px;
+    overflow-y: auto;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  }
+  .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+  .modal-title { font-size: 16px; font-weight: 800; }
+  .modal-close { font-size: 20px; font-weight: 700; cursor: pointer; border: none; background: none; }
+  .modal-body { font-size: 13.5px; line-height: 1.7; }
+  .highlight-text { background: var(--accent-soft); color: var(--accent); font-weight: 700; padding: 0 4px; border-radius: 4px; }
+  
+  .badge { display: inline-block; background: var(--accent); color: #fff; font-size: 11px; padding: 2px 6px; border-radius: 4px; margin-bottom: 6px; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <h1>파블로 세일즈 지원 킷</h1>
+    <p>담당자: 정지훈 팀장 (010-9606-1986)</p>
+  </div>
+
+  <!-- 검색 영역 -->
+  <div class="search-box">
+    <input type="text" id="searchInput" onkeyup="filterItems()" placeholder="키워드 검색 (예: 프리미엄, 가격, 거절, SEO...)">
+  </div>
+
+  <!-- 메인 탭 메뉴 -->
+  <div class="tab-nav">
+    <div class="tab-btn active" onclick="switchTab('tab-quote')">견적서</div>
+    <div class="tab-btn" onclick="switchTab('tab-script')">콜 스크립트</div>
+    <div class="tab-btn" onclick="switchTab('tab-objection')">대응 상황</div>
+    <div class="tab-btn" onclick="switchTab('tab-glossary')">용어 사전</div>
+    <div class="tab-btn" onclick="switchTab('tab-memo')">메모장</div>
+  </div>
+
+  <!-- 1. 견적서 탭 -->
+  <div id="tab-quote" class="tab-content active searchable">
+    <div class="card">
+      <span class="badge">광고주 82.7% 선택</span>
+      <div class="card-title">방문형 체험단 (A1)</div>
+      <table class="mini-table">
+        <tr><th>인원</th><th>원가</th><th>할인율</th><th>할인가</th></tr>
+        <tr><td>240명</td><td>2,400,000원</td><td>65%</td><td>840,000원</td></tr>
+        <tr class="highlight"><td>120명 ★</td><td>1,200,000원</td><td>60%</td><td>480,000원</td></tr>
+        <tr><td>60명</td><td>600,000원</td><td>40%</td><td>360,000원</td></tr>
+        <tr><td>30명</td><td>300,000원</td><td>20%</td><td>240,000원</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <span class="badge">광고주 92.3% 선택</span>
+      <div class="card-title">블로그 기자단 (1천 이상)</div>
+      <table class="mini-table">
+        <tr><th>건수</th><th>원가</th><th>할인율</th><th>할인가</th></tr>
+        <tr><td>50건</td><td>2,500,000원</td><td>35%</td><td>1,625,000원</td></tr>
+        <tr class="highlight"><td>30건 ★</td><td>1,500,000원</td><td>30%</td><td>1,050,000원</td></tr>
+        <tr><td>20건</td><td>1,000,000원</td><td>20%</td><td>800,000원</td></tr>
+        <tr><td>10건</td><td>500,000원</td><td>10%</td><td>450,000원</td></tr>
+      </table>
+    </div>
+
+    <div class="card" onclick="openModal('프리미엄 패키지 상세', '<b>구성:</b> 방문형 체험단 120건 + 블로그 기자단 30건<br><b>기간:</b> 24개월 약정<br><b>가격:</b> 총 153만원 (월 63,750원)<br><b>특징:</b> 전체 사업자의 87.3%가 고르는 메인 패키지입니다.')" style="cursor:pointer;">
+      <span class="badge" style="background:var(--navy-main);">CLICK 상세 정보</span>
+      <div class="card-title">👑 파블로 프리미엄 패키지</div>
+      <div class="card-desc">방문형 120건 + 기자단 30건 (24개월) / 총 153만원 (월 63,750원)</div>
+    </div>
+  </div>
+
+  <!-- 2. 콜 스크립트 탭 -->
+  <div id="tab-script" class="tab-content searchable">
+    <div class="item-btn" onclick="openModal('발랄 상큼 톤', '안녕하세요 사장님~ 플로우마케팅 담당자예요! 플레이스 보니까 잘 된 곳도 있고 살짝 아쉬운 부분도 있어서요. 딱 10분만 시간 내주실 수 있을까요?<br><br><b>핵심 메시지:</b> 프리미엄 패키지 120건+30건 (153만원) 제안')">
+      <div class="tag">버전 01</div><div class="q">발랄 상큼 버전 (친근·텐션업)</div>
+    </div>
+    <div class="item-btn" onclick="openModal('차분 신뢰 톤', '안녕하세요 사장님, 플로우마케팅입니다. 매장 플레이스 검토 결과 보완이 필요한 항목이 있어 연락드렸습니다.<br><br><b>핵심 메시지:</b> 경쟁사와 리뷰 격차(3천개 vs 15개)를 짚어주며 전문가 느낌으로 전달[cite: 3]')">
+      <div class="tag">버전 02</div><div class="q">차분 신뢰 버전 (안정·전문적)</div>
+    </div>
+    <div class="item-btn" onclick="openModal('데이터 전문가 톤', '데이터상 음식 사진의 클릭 전환율이 높게 나타납니다. 플레이스 상위 노출 알고리즘 순위에 맞춰 마케팅 방안을 설명해 드립니다.[cite: 3]')">
+      <div class="tag">버전 05</div><div class="q">데이터 전문가 버전 (근거·확신)</div>
+    </div>
+  </div>
+
+  <!-- 3. 대응 상황 탭 -->
+  <div id="tab-objection" class="tab-content searchable">
+    <div class="item-btn" onclick="openModal('시간 없어요', '<b>멘트:</b> 괜찮아요 사장님, 그럼 딱 30초만 드릴게요! 사장님 플레이스에서 손해보고 계신 부분 하나만 짚어드려도 될까요?<br><br><b>TIP:</b> 시간을 30초처럼 구체적으로 줄이면 부담이 감소합니다.')">
+      <div class="tag">오프닝</div><div class="q">"시간 없어요"</div>
+    </div>
+    <div class="item-btn" onclick="openModal('가격부터 말해주세요', '<b>멘트:</b> 가장 인기있는 프리미엄 패키지 기준 24개월에 153만원(월 63,750원)입니다. 매장 상황에 맞춰 조정 가능합니다.<br><br><b>TIP:</b> 기준가를 먼저 제시하여 신뢰를 확보하세요.[cite: 2]')">
+      <div class="tag">가격</div><div class="q">"가격부터 말해주세요"</div>
+    </div>
+    <div class="item-btn" onclick="openModal('효과 없었어요', '<b>멘트:</b> 그때 어떤 부분이 아쉬우셨나요? 저희는 방문형 체험단과 기자단을 묶어서 사진과 리뷰를 같이 확보하는 방식이라 다릅니다.[cite: 2]')">
+      <div class="tag">과거 경험</div><div class="q">"예전에 해봤는데 효과 없었어요"</div>
+    </div>
+  </div>
+
+  <!-- 4. 용어 사전 탭 -->
+  <div id="tab-glossary" class="tab-content searchable">
+    <div class="card">
+      <div class="card-title" style="color:var(--purple);">디지털 마케팅 전문 용어</div>
+      <div style="font-size:13px; line-height: 1.8;">
+        <b>SEO:</b> 검색엔진 최적화[cite: 2]<br>
+        <b>GEO:</b> 생성형 AI 엔진 최적화 (ChatGPT, Gemini 노출 대응)[cite: 2]<br>
+        <b>CTR / CVR:</b> 클릭률 / 전환율[cite: 2]<br>
+        <b>ROAS:</b> 광고비 대비 매출액 지표[cite: 2]
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. 메모장 탭 -->
+  <div id="tab-memo" class="tab-content">
+    <div class="card">
+      <div class="card-title">영업용 빠른 메모장</div>
+      <p class="card-desc">통화 중 빠르게 기록하세요. 내용은 브라우저에 자동 저장됩니다.</p>
+      <textarea id="memoText" class="memo-area" placeholder="고객 요구사항, 통화 예약시간, 특이사항 입력..."></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- 상세 내용 모달 (팝업) -->
+<div id="modalOverlay" class="modal-overlay" onclick="closeModal(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <div id="modalTitle" class="modal-title">상세 정보</div>
+      <button class="modal-close" onclick="forceCloseModal()">&times;</button>
+    </div>
+    <div id="modalBody" class="modal-body">
+      내용이 들어갑니다.
+    </div>
+  </div>
+</div>
+
+<script>
+  // 탭 전환 함수
+  function switchTab(tabId) {
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+    
+    event.target.classList.add('active');
+    document.getElementById(tabId).classList.add('active');
+  }
+
+  // 모달 팝업 열기
+  function openModal(title, content) {
+    document.getElementById('modalTitle').innerText = title;
+    document.getElementById('modalBody').innerHTML = content;
+    document.getElementById('modalOverlay').classList.add('active');
+  }
+
+  // 모달 팝업 닫기
+  function closeModal(e) {
+    if (e.target.id === 'modalOverlay') {
+      document.getElementById('modalOverlay').classList.remove('active');
+    }
+  }
+  function forceCloseModal() {
+    document.getElementById('modalOverlay').classList.remove('active');
+  }
+
+  // 메모장 자동 저장 (LocalStorage)
+  const memoTextarea = document.getElementById('memoText');
+  memoTextarea.value = localStorage.getItem('pablo_sales_memo') || '';
+  memoTextarea.addEventListener('input', () => {
+    localStorage.setItem('pablo_sales_memo', memoTextarea.value);
+  });
+
+  // 실시간 키워드 검색 기능
+  function filterItems() {
+    const query = document.getElementById('searchInput').value.toLowerCase();
+    const activeTab = document.querySelector('.tab-content.active');
+    
+    if(!activeTab) return;
+
+    const cards = activeTab.querySelectorAll('.card, .item-btn');
+    cards.forEach(card => {
+      const text = card.innerText.toLowerCase();
+      if (text.includes(query)) {
+        card.style.display = 'block';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  }
+</script>
+
+</body>
+</html>
