@@ -27,7 +27,7 @@
     line-height: 1.5;
   }
 
-  /* 비밀번호 잠금 화면 */
+  /* 비밀번호 잠금 */
   #authOverlay {
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
@@ -93,7 +93,6 @@
     flex-direction: column;
   }
 
-  /* 헤더 */
   .header {
     background: var(--navy-main);
     color: #fff;
@@ -104,7 +103,6 @@
   .header h1 { margin: 0; font-size: 20px; font-weight: 800; }
   .header p { margin: 4px 0 0; font-size: 13px; color: #C7CEDE; }
 
-  /* 검색창 */
   .search-box { margin-bottom: 12px; }
   .search-box input {
     width: 100%;
@@ -116,7 +114,6 @@
     background: #fff;
   }
 
-  /* AI 버튼 전용 스타일 */
   .ai-btn-card {
     background: #EFF6FF;
     border: 1.5px solid #3B82F6;
@@ -135,10 +132,8 @@
     font-weight: 700;
     font-size: 13.5px;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(37,99,235,0.2);
   }
 
-  /* 탭 네비게이션 */
   .tab-nav {
     display: flex;
     gap: 6px;
@@ -147,7 +142,7 @@
   }
   .tab-btn {
     flex: 1;
-    min-width: 75px;
+    min-width: 70px;
     padding: 10px 4px;
     text-align: center;
     background: #fff;
@@ -168,7 +163,6 @@
   .tab-content { display: none; }
   .tab-content.active { display: block; }
 
-  /* 카드 및 테이블 */
   .card {
     background: var(--card-bg);
     border: 1px solid var(--border-line);
@@ -199,7 +193,6 @@
   }
   .bold { font-weight: 800; }
 
-  /* 아코디언 */
   .accordion-item {
     background: #fff;
     border: 1px solid var(--border-line);
@@ -230,7 +223,6 @@
   .accordion-item.open .arrow { transform: rotate(180deg); }
   .arrow { transition: transform 0.2s; font-size: 10px; }
 
-  /* 메모장 패널 */
   .memo-panel {
     background: #fff;
     border: 1px solid var(--border-line);
@@ -289,7 +281,6 @@
 <div id="mainContent" class="main-content">
   <div class="app-layout">
     
-    <!-- 좌측 정보 영역 -->
     <div class="left-pane">
       <div class="header">
         <h1>기획팀 A2부사수 스크립트</h1>
@@ -298,234 +289,151 @@
 
       <!-- 검색창 -->
       <div class="search-box">
-        <input type="text" id="searchInput" onkeyup="filterItems()" placeholder="🔍 검색어 입력 (예: 바빠요, 가격, SEO, AI, 프리미엄...)">
+        <input type="text" id="searchInput" onkeyup="filterItems()" placeholder="🔍 검색어 입력 (예: 바빠요, 가격, 미용실, 뷰티, 기자단...)">
       </div>
 
-      <!-- 상단 탭 메뉴 -->
+      <!-- 탭 메뉴 (업체별 탭 포함) -->
       <div class="tab-nav">
         <div class="tab-btn active" onclick="switchTab('tab-quote')">견적서</div>
         <div class="tab-btn" onclick="switchTab('tab-package')">패키지</div>
         <div class="tab-btn" onclick="switchTab('tab-script')">영업멘트</div>
+        <div class="tab-btn" onclick="switchTab('tab-industry')">업체별</div>
         <div class="tab-btn" onclick="switchTab('tab-objection')">대응상황</div>
-        <div class="tab-btn" onclick="switchTab('tab-glossary')">용어사전</div>
+        <div class="tab-btn" onclick="switchTab('tab-sheet')">구글시트</div>
       </div>
 
-      <!-- 1. 견적서 탭 -->
+      <!-- 1. 견적서 -->
       <div id="tab-quote" class="tab-content active">
-        
-        <!-- 방문형 체험단 -->
         <div class="card">
           <span class="badge">광고주 82.7% 계약</span>
           <div class="card-title">방문형 체험단 (A1)</div>
-          <div class="card-sub">블로그, 인스타, 숏폼 포토 호환 가능</div>
           <table class="data-table">
             <tr><th>인원</th><th>원가</th><th>할인율</th><th>할인가</th><th>인당</th></tr>
             <tr><td>240명</td><td>2,400,000원</td><td>65%</td><td>840,000원</td><td>3,500원</td></tr>
             <tr class="important"><td><span class="bold">120명 ★</span></td><td>1,200,000원</td><td>60%</td><td><span class="bold">480,000원</span></td><td>4,000원</td></tr>
             <tr><td>60명</td><td>600,000원</td><td>40%</td><td>360,000원</td><td>6,000원</td></tr>
             <tr><td>30명</td><td>300,000원</td><td>20%</td><td>240,000원</td><td>8,000원</td></tr>
-            <tr><td>5명</td><td>50,000원</td><td>0%</td><td>50,000원</td><td>10,000원</td></tr>
           </table>
         </div>
 
-        <!-- 블로그 기자단 -->
         <div class="card">
           <span class="badge">광고주 92.3% 계약</span>
           <div class="card-title">블로그 기자단 (1천 이상)</div>
-          <div class="card-sub">파워블로거급 / 10건 이상 시 대필료 면제 (건당 2만원)</div>
           <table class="data-table">
             <tr><th>건수</th><th>원가</th><th>할인율</th><th>할인가</th><th>건당</th></tr>
             <tr><td>50건</td><td>2,500,000원</td><td>35%</td><td>1,625,000원</td><td>32,500원</td></tr>
             <tr class="important"><td><span class="bold">30건 ★</span></td><td>1,500,000원</td><td>30%</td><td><span class="bold">1,050,000원</span></td><td>35,000원</td></tr>
             <tr><td>20건</td><td>1,000,000원</td><td>20%</td><td>800,000원</td><td>40,000원</td></tr>
-            <tr><td>10건</td><td>500,000원</td><td>10%</td><td>450,000원</td><td>45,000원</td></tr>
-            <tr><td>3건</td><td>150,000원</td><td>0%</td><td>150,000원</td><td>50,000원</td></tr>
           </table>
-        </div>
-
-        <!-- 추가 옵션 -->
-        <div class="card">
-          <div class="card-title">추가 옵션 & 체험단 심사 옵션</div>
-          <table class="data-table">
-            <tr><th>옵션 종류</th><th>원가</th><th>할인율</th><th>할인가</th></tr>
-            <tr class="important"><td><span class="bold">A 방문자+저장</span></td><td>12,000원</td><td>60%</td><td><span class="bold">4,800원</span></td></tr>
-            <tr><td>B 방문자 리뷰</td><td>7,000원</td><td>50%</td><td>3,500원</td></tr>
-            <tr><td>B2 포토 방문자 리뷰</td><td>8,000원</td><td>50%</td><td>4,000원</td></tr>
-            <tr><td>C 플레이스 저장</td><td>5,000원</td><td>50%</td><td>2,500원</td></tr>
-          </table>
-          <div style="font-size:11.5px; color:var(--sub-text); margin-top:6px;">
-            * 체험단 심사: D 준최5 이상(2배) / E 최적1 이상(4배)
-          </div>
         </div>
       </div>
 
-      <!-- 2. 패키지 탭 -->
+      <!-- 2. 패키지 -->
       <div id="tab-package" class="tab-content">
-        
-        <!-- A 프리미엄 -->
-        <div class="accordion-item open">
-          <div class="accordion-header" onclick="toggleAccordion(this)">
-            <div>
-              <span class="badge" style="background:var(--navy-main);">87.3% 선택</span>
-              <div class="bold" style="font-size:15px; color:var(--navy-main);">👑 A 프리미엄 패키지 (24개월)</div>
-              <div style="font-size:12px; color:var(--accent); font-weight:800;">총 1,530,000원 (월 63,750원)</div>
-            </div>
-            <span class="arrow">▼</span>
-          </div>
-          <div class="accordion-body">
-            <table class="data-table">
-              <tr><th>구성 항목</th><th>수량</th><th>원가</th><th>할인가</th></tr>
-              <tr class="important"><td><span class="bold">방문형 체험단(A1)</span></td><td>120</td><td>1,200,000원</td><td><span class="bold">480,000원</span></td></tr>
-              <tr><td>[옵션] 방문자 리뷰</td><td>120</td><td>840,000원</td><td><span class="bold" style="color:var(--highlight-blue);">무료 (100%)</span></td></tr>
-              <tr><td>[옵션] 플레이스 저장</td><td>120</td><td>600,000원</td><td><span class="bold" style="color:var(--highlight-blue);">무료 (100%)</span></td></tr>
-              <tr><td>[옵션] 빅데이터 보고서</td><td>120</td><td>240,000원</td><td><span class="bold" style="color:var(--highlight-blue);">무료 (100%)</span></td></tr>
-              <tr><td>네이버 클립(숏폼)</td><td>3</td><td>30,000원</td><td><span class="bold" style="color:var(--highlight-blue);">무료 (100%)</span></td></tr>
-              <tr class="important"><td><span class="bold">블로그 기자단(1천)</span></td><td>30</td><td>1,500,000원</td><td><span class="bold">1,050,000원</span></td></tr>
-              <tr><td>[옵션] 원고 대필 / 포토</td><td>35</td><td>650,000원</td><td><span class="bold" style="color:var(--highlight-blue);">무료 (100%)</span></td></tr>
-              <tr><td>플레이스 최적화 점검</td><td>1</td><td>100,000원</td><td><span class="bold" style="color:var(--highlight-blue);">무료 (100%)</span></td></tr>
-            </table>
-            <div style="background:#FFF3ED; padding:8px; border-radius:6px; font-size:12px; color:var(--accent); margin-top:8px;">
-              <b>핵심셀링:</b> 가장 많은 광고주가 고르는 풀패키지! 월 6만 원대로 플레이스 노출 최적화.
-            </div>
+        <div class="card">
+          <div class="card-title">👑 A 프리미엄 패키지 (24개월)</div>
+          <div class="card-sub">총 1,530,000원 (월 63,750원)</div>
+          <div style="font-size:12.5px; color:var(--text-color);">
+            • 방문형 체험단 120명 + 기자단 30건<br>
+            • [무료 특전] 방문자 리뷰, 플레이스 저장, 숏폼 3건, 빅데이터 보고서 전체 무료 제공
           </div>
         </div>
-
-        <!-- B 베이직 -->
-        <div class="accordion-item open">
-          <div class="accordion-header" onclick="toggleAccordion(this)">
-            <div>
-              <span class="badge" style="background:#6B7280;">8.1% 선택</span>
-              <div class="bold" style="font-size:15px; color:var(--navy-main);">💎 B 베이직 패키지 (12개월)</div>
-              <div style="font-size:12px; color:var(--navy-main); font-weight:800;">총 1,065,000원 (월 88,750원)</div>
-            </div>
-            <span class="arrow">▼</span>
-          </div>
-          <div class="accordion-body">
-            <table class="data-table">
-              <tr><th>구성 항목</th><th>수량</th><th>원가</th><th>할인가</th></tr>
-              <tr class="important"><td><span class="bold">방문형 체험단(A1)</span></td><td>60</td><td>600,000원</td><td><span class="bold">360,000원</span></td></tr>
-              <tr><td>[옵션] 방문자 리뷰</td><td>60</td><td>420,000원</td><td><span class="bold" style="color:var(--highlight-blue);">무료 (100%)</span></td></tr>
-              <tr><td>[옵션] 플레이스 저장</td><td>60</td><td>300,000원</td><td><span class="bold" style="color:var(--highlight-blue);">무료 (100%)</span></td></tr>
-              <tr class="important"><td><span class="bold">블로그 기자단(1천)</span></td><td>10</td><td>500,000원</td><td><span class="bold">450,000원</span></td></tr>
-              <tr><td>[옵션] 원고 대필 / 포토</td><td>10</td><td>200,000원</td><td><span class="bold" style="color:var(--highlight-blue);">무료 (100%)</span></td></tr>
-              <tr><td>플레이스 최적화 점검</td><td>1</td><td>100,000원</td><td><span class="bold" style="color:var(--highlight-blue);">무료 (100%)</span></td></tr>
-            </table>
-            <div style="background:#F3F4F6; padding:8px; border-radius:6px; font-size:12px; color:var(--navy-main); margin-top:8px;">
-              <b>핵심셀링:</b> 1년 단위 계약을 원하는 매장에 적합한 기본 실속형 패키지.
-            </div>
-          </div>
-        </div>
-
-        <!-- C 라이트 -->
-        <div class="accordion-item open">
-          <div class="accordion-header" onclick="toggleAccordion(this)">
-            <div>
-              <span class="badge" style="background:#6B7280;">4.6% 선택</span>
-              <div class="bold" style="font-size:15px; color:var(--navy-main);">🌱 C 라이트 패키지 (6개월)</div>
-              <div style="font-size:12px; color:var(--navy-main); font-weight:800;">총 634,000원 (월 105,667원)</div>
-            </div>
-            <span class="arrow">▼</span>
-          </div>
-          <div class="accordion-body">
-            <table class="data-table">
-              <tr><th>구성 항목</th><th>수량</th><th>원가</th><th>할인가</th></tr>
-              <tr class="important"><td><span class="bold">방문형 체험단(A1)</span></td><td>30</td><td>300,000원</td><td><span class="bold">240,000원</span></td></tr>
-              <tr><td>[옵션] 방문자 리뷰</td><td>30</td><td>210,000원</td><td><span class="bold" style="color:var(--highlight-blue);">무료 (100%)</span></td></tr>
-              <tr class="important"><td><span class="bold">블로그 기자단(1천)</span></td><td>5</td><td>250,000원</td><td><span class="bold">225,000원</span></td></tr>
-              <tr><td>[옵션] 원고 대필 / 포토</td><td>5</td><td>100,000원</td><td><span class="bold" style="color:var(--highlight-blue);">무료 (100%)</span></td></tr>
-              <tr><td>플레이스 최적화 점검</td><td>1</td><td>100,000원</td><td><span class="bold" style="color:var(--highlight-blue);">무료 (100%)</span></td></tr>
-            </table>
-            <div style="background:#F3F4F6; padding:8px; border-radius:6px; font-size:12px; color:var(--navy-main); margin-top:8px;">
-              <b>핵심셀링:</b> 신규 오픈 단기 테스트용 6개월 스타터 패키지.
-            </div>
-          </div>
-        </div>
-
       </div>
 
-      <!-- 3. 영업멘트 탭 -->
+      <!-- 3. 영업멘트 (복원 완료) -->
       <div id="tab-script" class="tab-content">
         <div class="accordion-item open">
           <div class="accordion-header" onclick="toggleAccordion(this)">
-            <span class="bold">📢 [친근] 발랄 상큼 톤 (오프닝)</span>
+            <span class="bold">📢 [오프닝] 친근/상큼 톤</span>
             <span class="arrow">▼</span>
           </div>
           <div class="accordion-body">
-            안녕하세요 사장님~ 플로우마케팅 담당자예요! 플레이스 보니까 잘 된 곳도 있고 살짝 아쉬운 부분도 있어서요. 딱 10분만 시간 내주실 수 있을까요?
+            "안녕하세요 사장님~! 플로우마케팅 김희진 담당자입니다. 사장님 플레이스 매장 둘러보다가 노출 부분에서 몇 가지 보완하면 손님이 훨씬 늘 것 같아 반가운 마음에 전화드렸어요! 딱 1분만 시간 괜찮으실까요?"
           </div>
         </div>
         <div class="accordion-item">
           <div class="accordion-header" onclick="toggleAccordion(this)">
-            <span class="bold">👔 [신뢰] 차분한 전문가 톤</span>
+            <span class="bold">👔 [오프닝] 전문가/신뢰 톤</span>
             <span class="arrow">▼</span>
           </div>
           <div class="accordion-body">
-            안녕하세요 사장님, 플로우마케팅입니다. 매장 플레이스 검토 결과 보완이 필요한 항목이 있어 연락드렸습니다.
+            "안녕하십니까 대표님, 플로우마케팅 상위노출 컨설팅팀입니다. 현재 매장의 지역 키워드 검색 노출 지수를 분석한 결과, 상위권 진입을 위한 핵심 지표 보완이 필요한 상황이라 직접 연락드렸습니다."
+          </div>
+        </div>
+        <div class="accordion-item">
+          <div class="accordion-header" onclick="toggleAccordion(this)">
+            <span class="bold">💡 [클로징] 확신과 제안</span>
+            <span class="arrow">▼</span>
+          </div>
+          <div class="accordion-body">
+            "사장님, 저희는 단기성 광고가 아니라 실제 매장 방문 리뷰와 저장하기 지수를 함께 올려서 네이버 알고리즘에 맞게 순위를 지속 유지시켜 드립니다. 월 6만 원대로 플레이스 최적화 세팅까지 전부 다 알아서 챙겨드릴 테니 이번 기회에 저희 믿고 진행해 보시죠!"
           </div>
         </div>
       </div>
 
-      <!-- 4. 대응상황 탭 -->
+      <!-- 4. 업체별 맞춤 세링 (복원 완료) -->
+      <div id="tab-industry" class="tab-content">
+        <div class="card">
+          <div class="card-title">🍕 요식업 / 맛집 매장</div>
+          <div style="font-size:12.5px;">
+            • <b>포인트:</b> 비주얼 중심 사진 + 영수증 포토 리뷰 + 플레이스 저장하기 필수 강조<br>
+            • <b>추천 멘트:</b> "맛집 검색 시 플레이스 상단에 예쁜 음식 사진과 포토 리뷰가 쌓여있어야 손님들이 고민 없이 방문합니다."
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">💇‍♀️ 뷰티 / 미용 / 헤어 / 네일</div>
+          <div style="font-size:12.5px;">
+            • <b>포인트:</b> 인스타 감성 숏폼(클립) + 정성스러운 블로그 후기<br>
+            • <b>추천 멘트:</b> "뷰티 분야는 원장님 시술 비포/애프터 사진과 체험단 블로거의 꼼꼼한 후기가 예약률을 결정지어 줍니다."
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">🏥 병의원 / 피티샵 / 전문 업종</div>
+          <div style="font-size:12.5px;">
+            • <b>포인트:</b> 1천 명 이상 블로그 기자단 전문 원고 + 키워드 검색 최적화(SEO)<br>
+            • <b>추천 멘트:</b> "신뢰도가 중요한 업종인 만큼, 파워블로거급 인플루언서 기자단을 통해 전문적인 지식과 후기를 노출해야 신규 고객 신뢰를 얻습니다."
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. 대응상황 -->
       <div id="tab-objection" class="tab-content">
-        
-        <!-- ChatGPT 빠른 AI 질문 버튼 -->
         <div class="ai-btn-card">
-          <div style="font-size:12.5px; font-weight:700; color:#1E40AF; margin-bottom:6px;">⚡ 작성된 멘트에 없는 질문을 받았을 때</div>
+          <div style="font-size:12.5px; font-weight:700; color:#1E40AF; margin-bottom:6px;">⚡ 돌발 질문 받으셨을 때</div>
           <a href="https://chatgpt.com/?q=%EB%A7%88%EC%BC%80%ED%8C%85%20%EC%96%B1%EC%97%85%20%EC%A5%B0%20%EA%B4%91%EA%B3%A0%EC%A3%BC%EA%B0%80%20%EB%8B%A4%EC%9D%8C%EA%B3%BC%20%EA%B0%99%EC%9D%B4%20%EA%B1%B0%EC%A0%88%ED%96%88%EC%96%B4%EC%9A%94.%20%EC%82%AC%EC%95%85%ED%95%98%EC%A7%80%20%EC%95%8A%EA%B3%A0%20%EB%8B%A4%EC%A0%95%ED%95%98%EA%B2%8C%20%EB%A7%88%EC%9D%8C%EC%9D%84%20%EB%8F%8C%EB%A6%B0%20%EC%84%A4%EB%93%9D%20%EB%A9%98%ED%8A%B8%203%EA%B0%9C%20%EC%BRecommendation%ED%95%B4%EC%A3%BC%EC%84%B8%EC%9A%94%3A%20" target="_blank" class="ai-btn">
-            🤖 ChatGPT에 실시간 돌발 질문하기 (무료)
+            🤖 ChatGPT 질문 바로가기
           </a>
         </div>
-
         <div class="accordion-item open">
           <div class="accordion-header" onclick="toggleAccordion(this)">
             <span class="bold" style="color:var(--accent);">🛑 "바빠요 / 시간 없어요"</span>
             <span class="arrow">▼</span>
           </div>
           <div class="accordion-body">
-            <b>대응 멘트:</b> "괜찮아요 사장님, 그럼 딱 30초만 드릴게요! 사장님 플레이스에서 손해보고 계신 부분 하나만 짚어드려도 될까요?"
-          </div>
-        </div>
-        <div class="accordion-item">
-          <div class="accordion-header" onclick="toggleAccordion(this)">
-            <span class="bold" style="color:var(--accent);">🛑 "가격부터 먼저 말해주세요"</span>
-            <span class="arrow">▼</span>
-          </div>
-          <div class="accordion-body">
-            <b>대응 멘트:</b> "가장 많이 하시는 프리미엄 기준 24개월 153만 원(월 6만 원대)입니다. 매장 상황에 맞춰 세부 조정 가능합니다!"
-          </div>
-        </div>
-        <div class="accordion-item">
-          <div class="accordion-header" onclick="toggleAccordion(this)">
-            <span class="bold" style="color:var(--accent);">🤖 "AI(ChatGPT 등) 검색 추천도 되나요?"</span>
-            <span class="arrow">▼</span>
-          </div>
-          <div class="accordion-body">
-            <b>대응 멘트:</b> "네 사장님! 네이버 블로그뿐만 아니라, 요즘 소비자들이 많이 쓰는 AI 검색(GEO)에도 사장님 매장이 추천되도록 데이터 최적화 작업을 함께 진행해 드립니다."
+            "괜찮습니다 사장님! 바쁘신 시간 피해서 핵심만 딱 30초만 말씀드릴게요. 사장님 플레이스 매장에서 지금 누수되고 있는 방문 고객 매출 포인트 하나만 짚어드릴까요?"
           </div>
         </div>
       </div>
 
-      <!-- 5. 용어사전 탭 -->
-      <div id="tab-glossary" class="tab-content">
+      <!-- 6. 구글시트 동적 데이터 연동 탭 -->
+      <div id="tab-sheet" class="tab-content">
         <div class="card">
-          <div class="card-title">필수 마케팅 용어</div>
-          <div style="font-size:13px; line-height: 1.8;">
-            <b>SEO:</b> 검색엔진 최적화 (네이버 상위노출)<br>
-            <b>GEO:</b> AI 검색 최적화 (ChatGPT, Gemini 노출)<br>
-            <b>CTR / CVR:</b> 클릭률 / 구매 전환율<br>
-            <b>ROAS:</b> 광고비 대비 매출 성과 지표
+          <div class="card-title">📊 구글 시트 실시간 데이터</div>
+          <div class="card-sub">스프레드시트에 작성한 내용이 자동으로 아래에 표시됩니다.</div>
+          <div id="sheetDataContainer">
+            <p style="font-size:12px; color:var(--sub-text);">구글 Apps Script URL을 설정하면 시트 데이터를 이곳에 실시간으로 불러옵니다.</p>
           </div>
         </div>
       </div>
 
     </div>
 
-    <!-- 우측 상담 메모장 고정 패널 -->
+    <!-- 메모장 고정 패널 -->
     <div class="right-pane">
       <div class="memo-panel">
-        <h3>📝 광고주 상담 실시간 메모장</h3>
-        <p>견적/멘트를 보며 상담 내용을 기록하세요 (자동 저장)</p>
-        <textarea id="memoText" class="memo-area" placeholder="예) 강남 00식당 / 사장님 성함 / 120명 패키지 관심 / 내일 오후 2시 재통화..."></textarea>
+        <h3>📝 상담 실시간 메모장</h3>
+        <p>상담 내용을 적어두세요 (자동 저장)</p>
+        <textarea id="memoText" class="memo-area" placeholder="예) 강남 00식당 / 사장님 성함 / 프리미엄 관심 / 내일 오후 2시 재통화..."></textarea>
       </div>
     </div>
 
@@ -569,7 +477,6 @@
     localStorage.setItem('pablo_sales_memo', memoTextarea.value);
   });
 
-  // 키워드 실시간 필터링 기능
   function filterItems() {
     const query = document.getElementById('searchInput').value.toLowerCase();
     const activeTab = document.querySelector('.tab-content.active');
@@ -578,6 +485,31 @@
     targets.forEach(el => {
       el.style.display = el.innerText.toLowerCase().includes(query) ? 'block' : 'none';
     });
+  }
+
+  // 구글 시트 연동 불러오기 함수
+  const GOOGLE_SCRIPT_URL = 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE'; // 1단계에서 얻은 URL을 넣으세요
+
+  if(GOOGLE_SCRIPT_URL !== 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') {
+    fetch(GOOGLE_SCRIPT_URL)
+      .then(res => res.json())
+      .then(data => {
+        let container = document.getElementById('sheetDataContainer');
+        if(data && data.length > 0) {
+          let html = '<table class="data-table">';
+          data.forEach((row, index) => {
+            html += '<tr>';
+            row.forEach(cell => {
+              if(index === 0) html += `<th>${cell}</th>`;
+              else html += `<td>${cell}</td>`;
+            });
+            html += '</tr>';
+          });
+          html += '</table>';
+          container.innerHTML = html;
+        }
+      })
+      .catch(err => console.error('시트 데이터를 불러오지 못했습니다:', err));
   }
 </script>
 
