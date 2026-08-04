@@ -457,7 +457,7 @@
         </div>
       </div>
 
-      <!-- 4. 대응상황 탭 (오타 수정된 GPT 링크 프롬프트 적용) -->
+      <!-- 4. 대응상황 탭 -->
       <div id="tab-objection" class="tab-content">
         <div class="ai-btn-card">
           <div style="font-size:12.5px; font-weight:700; color:#1E40AF; margin-bottom:6px;">⚡ 작성된 멘트에 없는 질문을 받았을 때</div>
@@ -528,22 +528,22 @@
 
     </div>
 
-    <!-- 우측 패널 (분리된 선택형 계산기 + 메모장) -->
+    <!-- 우측 패널 (실전 영업 계산기 + 메모장) -->
     <div class="right-pane">
       
-      <!-- 실전 영업 계산기 (추가 옵션 & 심사 옵션 분리형) -->
+      <!-- 실전 영업 계산기 (할부 개월수 옵션 추가 반영) -->
       <div class="calc-panel">
         <h3>🧮 실전 영업 계산기</h3>
         
         <div class="calc-row">
           <span>1. 체험단 인원 선택:</span>
           <select id="calcExp" onchange="calculateTotal()">
-            <option value="0|0">없음 (0원)</option>
-            <option value="5|50000">5명 (50,000원)</option>
-            <option value="30|240000">30명 (240,000원)</option>
-            <option value="60|360000">60명 (360,000원)</option>
-            <option value="120|480000" selected>120명 ★ (480,000원)</option>
-            <option value="240|840000">240명 (840,000원)</option>
+            <option value="0">없음 (0원)</option>
+            <option value="50000">5명 (50,000원)</option>
+            <option value="240000">30명 (240,000원)</option>
+            <option value="360000">60명 (360,000원)</option>
+            <option value="480000" selected>120명 ★ (480,000원)</option>
+            <option value="840000">240명 (840,000원)</option>
           </select>
         </div>
 
@@ -570,16 +570,28 @@
         <div class="calc-row">
           <span>4. 패키지 선택:</span>
           <select id="calcPkg" onchange="calculateTotal()">
-            <option value="0|1|단독 진행">없음 (단독 구성)</option>
-            <option value="1530000|24|👑 A 프리미엄 (24개월)" selected>👑 A 프리미엄 패키지 (1,530,000원 / 24개월)</option>
-            <option value="1065000|12|💎 B 베이직 (12개월)">💎 B 베이직 패키지 (1,065,000원 / 12개월)</option>
-            <option value="634000|6|🌱 C 라이트 (6개월)">🌱 C 라이트 패키지 (634,000원 / 6개월)</option>
+            <option value="0">없음 (단독 구성)</option>
+            <option value="1530000" selected>👑 A 프리미엄 패키지 (1,530,000원)</option>
+            <option value="1065000">💎 B 베이직 패키지 (1,065,000원)</option>
+            <option value="634000">🌱 C 라이트 패키지 (634,000원)</option>
+          </select>
+        </div>
+
+        <div class="calc-row">
+          <span>5. 할부 개월수 선택:</span>
+          <select id="calcMonths" onchange="calculateTotal()">
+            <option value="1">일시불 (1개월)</option>
+            <option value="3">3개월 할부</option>
+            <option value="6">6개월 할부</option>
+            <option value="12">12개월 할부</option>
+            <option value="24" selected>24개월 할부</option>
           </select>
         </div>
 
         <div class="calc-result" id="calcOutput">
-          <b>총 금액:</b> 1,530,000원<br>
-          <b>월 할부금:</b> 월 63,750원 (24개월 기준)
+          <b>총 예상금액:</b> 1,530,000원<br>
+          <b>월 납부금:</b> 약 63,750원 (월)<br>
+          <b>일 납부금:</b> 약 2,125원 (일)
         </div>
       </div>
 
@@ -626,36 +638,28 @@
     item.classList.toggle('open');
   }
 
-  // 선택형 계산기 로직 (추가 옵션과 심사 옵션 분리 반영)
+  // 실전 영업 계산기 로직 (총금액, 월 납부금, 일 납부금 계산)
   function calculateTotal() {
-    const expVal = document.getElementById('calcExp').value.split('|');
-    const expPrice = parseInt(expVal[1]) || 0;
-
+    const expPrice = parseInt(document.getElementById('calcExp').value) || 0;
     const addOptPrice = parseInt(document.getElementById('calcAddOpt').value) || 0;
     const reviewOptPrice = parseInt(document.getElementById('calcReviewOpt').value) || 0;
-
-    const pkgVal = document.getElementById('calcPkg').value.split('|');
-    const pkgPrice = parseInt(pkgVal[0]) || 0;
-    const pkgMonths = parseInt(pkgVal[1]) || 1;
-    const pkgName = pkgVal[2];
+    const pkgPrice = parseInt(document.getElementById('calcPkg').value) || 0;
+    const months = parseInt(document.getElementById('calcMonths').value) || 1;
 
     let total = 0;
-    let monthlyText = '';
-
     if (pkgPrice > 0) {
-      // 패키지 선택 시 패키지 금액 + 추가 옵션 및 심사 옵션 합산
       total = pkgPrice + addOptPrice + reviewOptPrice;
-      const monthly = Math.round(total / pkgMonths);
-      monthlyText = `<b>패키지:</b> ${pkgName}<br><b>월 할부금:</b> 약 ${monthly.toLocaleString()}원 (${pkgMonths}개월 기준)`;
     } else {
-      // 단독 선택인 경우 체험단 + 추가옵션 + 심사옵션 모두 합산
       total = expPrice + addOptPrice + reviewOptPrice;
-      monthlyText = `<b>구성:</b> 단독 선택<br><b>일시불 / 분할:</b> ${total.toLocaleString()}원`;
     }
+
+    const monthly = Math.round(total / months);
+    const daily = Math.round(monthly / 30);
 
     document.getElementById('calcOutput').innerHTML = `
       <b>총 예상금액:</b> <span style="font-size:14px; font-weight:800;">${total.toLocaleString()}원</span><br>
-      ${monthlyText}
+      <b>월 납부금:</b> 약 ${monthly.toLocaleString()}원 (${months}개월 기준)<br>
+      <b>일 납부금:</b> 약 ${daily.toLocaleString()}원 (하루 기준)
     `;
   }
 
